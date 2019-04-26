@@ -1,0 +1,80 @@
+1) Identify useful benchmark clustering data sets, e.g. from UCI Machine Learning Repository
+---------------------------------------------------------------------------------------------
+
+- this helps in testing the own implementation and you can directly compare the results to other researchers which used the same data set
+- possible sources (you might find others):
+
+used in FDCA paper:
+http://kdd.ics.uci.edu/databases/kddcup99/kddcup99.html
+
+might also be interesting (but has missing values that you might identify --> don't use these data points):
+https://www.kaggle.com/questions-and-answers/35103
+
+you might check this table (but this one is quite limited)
+http://archive.ics.uci.edu/ml/datasets.php?format=&task=&att=mix&area=&numAtt=&numIns=&type=&sort=nameUp&view=table
+
+used in FDCA paper:
+Aggregation, Spiral, Jain: these obly have 2 attributes and therefore might help during the implementation to check if you are on teh right track
+
+important properties of the data we need:
+- designed for clustering tasks
+- categorical and real valued features
+
+- let's use at least two different data sets
+
+2) Read FDCA paper and extract all the steps of the method
+-----------------------------------------------------------
+
+- I realized that there is no big magic behind this approach and it should be easy to extract a pseudo-code of how this method works
+- identify a structure for the implementation as well as a good way to store the data (lists, dicts, np.arrays?)
+
+
+3) Implement a "framework" that allows to test and validate your implementation + to do simulations
+---------------------------------------------------------------------------------------------------
+
+- before implementing clustering methods itself, we need a bit preparation; we have to:
+- read our data sets into memory
+- maybe we have to rearrange the data so that it fits well to our clustering implementation
+- call the clustering method and receive the results
+- optionally plot some results to check, if your implementation works as expected
+- optionally output some intermediate results (e.g. whenever a new cluster center is detected) to see that everything is going right
+- evaluate the results based on the provided ground truth of our benchmark data set 
+  (this includes the identification and implementation of suitable evaluation metrics, e.g. clustering accuracy and purity of clusters, as done in the FDCA paper)
+- measures running time for the clustering
+
+- we might use this frame in order to easily switch to other data sets as well as other clustering methods
+- hence, the interface of our readers, clustering algorithms and evaluation steps should be equal
+
+--> before doing this, we have to think about a good structure (e.g., maybe define a reader-class for each data set to read in, ...)
+
+4) Implement FDCA
+------------------
+- use a simple data set, e.g. Aggregation, Spiral, or Jain for testing purposes
+- modularity (functions for steps that are conducted several times)
+
+
+5) Evaluate FDCA by comparing the results to other papers (like the FDCA paper, in which the kdd data set was also clustered)
+-----------------------------------------------------------------------------------------------------------------------------
+
+6) Let's try to apply the method to our Florence twitter data set and analyze/visualize the results
+----------------------------------------------------------------------------------------------------
+- impact of different method parameters, e.g. on cluster sizes and shapes?
+- differences do STDBSCAN?
+- what happens if we cluster the data by using time and space compared to using time, space, and categories?
+--> does FDCA help in finding meaningful clusters in which similar tipics are discussed in similar regions and during similar timespans?
+
+7) Integration of the method into one of our systems (Event Detetection Viewer or Kibana)
+------------------------------------------------------------------------------------------
+- viewer is implemented im javascript frontend - de-coupling possible?
+- another option: add clustering results as a new feature (column) in Kibana/Elastic and visualize the results in Kibana
+
+
+##################
+
+
+8) Since FDCA might be very easy: do we have enough time and motivation to implement another method, like FGCH?
+----------------------------------------------------------------------------------------------------------------
+- the appealing property of this method is that data streams can be clustered
+- this means we would need to implement a further method for our framework that reads in data (e.g. the Florence data set) and simulates a data stream based on the timestamps provided in each tweet
+
+... too many ideas.......
