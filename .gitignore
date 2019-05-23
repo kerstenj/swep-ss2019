@@ -1,2 +1,3 @@
 datasets/kdd-cup/*.data
 test_env/env
+.vscode/
