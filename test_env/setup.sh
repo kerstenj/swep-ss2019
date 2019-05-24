@@ -1,4 +1,4 @@
 # pip install virtualenv
-virtualenv env
-. /env/bin/activate
+virtualenv -p python3 env
+source env/bin/activate
 pip install -r requirements.in

@@ -1,3 +1,4 @@
 datasets/kdd-cup/*.data
 test_env/env
+test_env/__pycache__
 .vscode/
