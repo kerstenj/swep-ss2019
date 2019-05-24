@@ -18,4 +18,9 @@ if __name__ == '__main__':
         algorithms[algorithm] = algorithm_source.load_plugin(algorithm)
     print('Success')
 
-    import code; code.interact(local=locals())
+    print(f'Executing algorithm: "kmeans_naive"')
+    algorithms['kmeans_naive'].execute(
+        datasets['iris'].frame,
+        3
+    )
+    #import code; code.interact(local=locals())
