@@ -6,17 +6,17 @@ import help
 
 class Dataset:
 
-    def __init__(self, name, frame, file_path=None):
+    def __init__(self, name, frame, filepath=None):
         self.name = name
         self.frame = frame
-        self.file_path = file_path
+        self.filepath = filepath
 
     @classmethod
-    def from_file(cls, file_path):
-        name = os.path.splitext(os.path.basename(file_path))[0]
-        frame = pd.read_csv(file_path)
+    def from_file(cls, filepath):
+        name = os.path.splitext(os.path.basename(filepath))[0]
+        frame = pd.read_csv(filepath)
 
-        return cls(name, frame, file_path)
+        return cls(name, frame, filepath)
 
 
 class DatasetManager:
@@ -40,7 +40,7 @@ class DatasetManager:
                 ds.name,
                 str( len(ds.frame.index) ),
                 help.format_size(ds.frame.memory_usage(deep=True).sum()),
-                ds.file or ''
+                ds.filepath or ''
             ])
 
         return pt.get_string()
@@ -65,9 +65,9 @@ class DatasetManager:
     Returns the dataset associated with the given file.
     None if it doesn't exist.
     '''
-    def get_by_file(self, file_path):
+    def get_by_file(self, filepath):
         for _, ds in self.datasets.items():
-            if ds.file == os.path.realpath(file_path):
+            if ds.file == os.path.realpath(filepath):
                 return ds
         return None
 
@@ -76,7 +76,7 @@ class DatasetManager:
     Overrides entries with similar names.
     '''
     def load_datasets(self, files):
-        for file_path in files:
-            ds = Dataset.from_file(file_path)
+        for filepath in files:
+            ds = Dataset.from_file(filepath)
             self.datasets[ds.name] = ds
 
