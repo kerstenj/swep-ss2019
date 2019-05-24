@@ -14,10 +14,10 @@ class Dataset:
 
     @classmethod
     def from_file(cls, filepath):
-    """
-    Load a Dataset from the given file.
-    Supported format is CSV.
-    """
+        """
+        Load a Dataset from the given file.
+        Supported format is CSV.
+        """
         name = os.path.splitext(os.path.basename(filepath))[0]
         frame = pd.read_csv(filepath)
 
@@ -57,25 +57,25 @@ class DatasetManager:
 
 
     def info(self):
-    """"
-    Returns a list of all Datasets with additional information.
-    """
+        """"
+        Returns a list of all Datasets with additional information.
+        """
         print(self)
 
 
     def get_by_name(self, name):
-    """
-    Returns the dataset with the given name.
-    None if it doesn't exist.
-    """
+        """
+        Returns the dataset with the given name.
+        None if it doesn't exist.
+        """
         return self.datasets.get(name)
 
 
     def get_by_file(self, filepath):
-    """
-    Returns the dataset associated with the given file.
-    None if it doesn't exist.
-    """
+        """
+        Returns the dataset associated with the given file.
+        None if it doesn't exist.
+        """
         for _, ds in self.datasets.items():
             if ds.file == os.path.realpath(filepath):
                 return ds
@@ -83,11 +83,18 @@ class DatasetManager:
 
 
     def load_datasets(self, files):
-    """
-    Loads all given files into this DatasetManager.
-    Overrides entries with similar names.
-    """
+        """
+        Loads all given files into this DatasetManager.
+        Overrides entries with similar names.
+        """
         for filepath in files:
-            ds = Dataset.from_file(filepath)
-            self.datasets[ds.name] = ds
+            dataset = Dataset.from_file(filepath)
+            self.datasets[dataset.name] = dataset
 
+    def add_datasets(self, datasets):
+        """
+        Adds the given Datasets to this DatasetManager.
+        Overrides entries with similar names.
+        """
+        for dataset in datasets:
+            self.datasets[dataset.name] = dataset
