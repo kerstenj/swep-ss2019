@@ -11,8 +11,13 @@ class Dataset:
         self.frame = frame
         self.filepath = filepath
 
+
     @classmethod
     def from_file(cls, filepath):
+    """
+    Load a Dataset from the given file.
+    Supported format is CSV.
+    """
         name = os.path.splitext(os.path.basename(filepath))[0]
         frame = pd.read_csv(filepath)
 
@@ -26,6 +31,7 @@ class DatasetManager:
 
         files = help.locate_files_rec(path, 'data')
         self.load_datasets(files)
+
 
     def __str__(self):
         pt = PrettyTable(['Name', 'Entries', 'Size in Memory', 'File'])
@@ -45,37 +51,42 @@ class DatasetManager:
 
         return pt.get_string()
 
+
     def __getitem__(self, name):
         return self.get_by_name(name)
 
-    '''
-    Returns a list of all Datasets with additional information.
-    '''
+
     def info(self):
+    """"
+    Returns a list of all Datasets with additional information.
+    """
         print(self)
 
-    '''
+
+    def get_by_name(self, name):
+    """
     Returns the dataset with the given name.
     None if it doesn't exist.
-    '''
-    def get_by_name(self, name):
+    """
         return self.datasets.get(name)
 
-    '''
+
+    def get_by_file(self, filepath):
+    """
     Returns the dataset associated with the given file.
     None if it doesn't exist.
-    '''
-    def get_by_file(self, filepath):
+    """
         for _, ds in self.datasets.items():
             if ds.file == os.path.realpath(filepath):
                 return ds
         return None
 
-    '''
+
+    def load_datasets(self, files):
+    """
     Loads all given files into this DatasetManager.
     Overrides entries with similar names.
-    '''
-    def load_datasets(self, files):
+    """
         for filepath in files:
             ds = Dataset.from_file(filepath)
             self.datasets[ds.name] = ds
