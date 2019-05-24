@@ -6,10 +6,17 @@ import help
 
 class Dataset:
 
-    def __init__(self, file):
-        self.file = file
-        self.name = os.path.splitext(os.path.basename(file))[0]
-        self.frame = pd.read_csv(file)
+    def __init__(self, name, frame, file_path=None):
+        self.name = name
+        self.frame = frame
+        self.file_path = file_path
+
+    @classmethod
+    def from_file(cls, file_path):
+        name = os.path.splitext(os.path.basename(file_path))[0]
+        frame = pd.read_csv(file_path)
+
+        return cls(name, frame, file_path)
 
 
 class DatasetManager:
@@ -19,7 +26,7 @@ class DatasetManager:
 
         files = help.locate_files_rec(path, 'data')
         self.load_datasets(files)
-    
+
     def __str__(self):
         pt = PrettyTable(['Name', 'Entries', 'Size in Memory', 'File'])
 
@@ -33,14 +40,17 @@ class DatasetManager:
                 ds.name,
                 str( len(ds.frame.index) ),
                 help.format_size(ds.frame.memory_usage(deep=True).sum()),
-                ds.file
+                ds.file or ''
             ])
-        
+
         return pt.get_string()
 
     def __getitem__(self, name):
         return self.get_by_name(name)
 
+    '''
+    Returns a list of all Datasets with additional information.
+    '''
     def info(self):
         print(self)
 
@@ -55,9 +65,9 @@ class DatasetManager:
     Returns the dataset associated with the given file.
     None if it doesn't exist.
     '''
-    def get_by_file(self, file):
+    def get_by_file(self, file_path):
         for _, ds in self.datasets.items():
-            if ds.file == os.path.realpath(file):
+            if ds.file == os.path.realpath(file_path):
                 return ds
         return None
 
@@ -66,7 +76,7 @@ class DatasetManager:
     Overrides entries with similar names.
     '''
     def load_datasets(self, files):
-        for file in files:
-            ds = Dataset(file)
+        for file_path in files:
+            ds = Dataset.from_file(file_path)
             self.datasets[ds.name] = ds
 
