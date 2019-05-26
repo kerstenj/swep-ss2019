@@ -19,8 +19,10 @@ if __name__ == '__main__':
     print('Success')
 
     print(f'Executing algorithm: "kmeans_naive"')
+    df = datasets['iris'].frame
+
     algorithms['kmeans_naive'].execute(
-        datasets['iris'].frame,
+        df.loc[:, df.columns != 'class'],
         3
     )
     #import code; code.interact(local=locals())
