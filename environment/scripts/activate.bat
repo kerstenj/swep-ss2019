@@ -1,1 +1,1 @@
-cmd /k .\env\Scripts\activate
+cmd /k ..\env\Scripts\activate
