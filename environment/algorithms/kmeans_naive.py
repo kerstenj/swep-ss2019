@@ -15,9 +15,10 @@ def get_random_centroids(df, k):
 
     while len(centroids) < k:
         idx = random.randint(0, len(df.index)-1)
+        row = df.iloc[idx]
 
-        if idx in centroids: continue
-        else: centroids.append(idx)
+        if row in centroids: continue
+        else: centroids.append( (idx,row) )
 
     return centroids
 
@@ -29,12 +30,12 @@ def assign_to_centroids(df, centroids):
         # Calculate nearest center
         min_index = -1
         min_dist = np.inf
-        for center_index, center in df.iloc[centroids].iterrows():
-            dist = euclidean_distance(row, center)
+        for centroid_index, centroid in centroids:
+            dist = euclidean_distance(row, centroid)
 
             if dist < min_dist:
                 min_dist = dist
-                min_index = center_index
+                min_index = centroid_index
 
         assigned[index] = min_index
 
@@ -50,7 +51,10 @@ def columns_equal(a, b):
 def find_new_centroids(df, centroids):
     new_centroids = []
 
-    for center_index in centroids:
+    for centroid_index, centroid in centroids:
+        new_centroid = Series([0 for _ in range(len(df.index))], index=df.index)
+
+    return new_centroids
 
 
 def execute(df, k):
@@ -67,7 +71,9 @@ def execute(df, k):
         centroids = find_new_centroids(df, centroids)
         df['center_index_old'] =  df['center_index']
         df['center_index'] = assign_to_centroids(df, centroids)
+
         print(f'Iteration #{i}')
+        i += 1
 
     df.drop('center_index_old', axis=1, inplace=True)
     print(df.to_string())
