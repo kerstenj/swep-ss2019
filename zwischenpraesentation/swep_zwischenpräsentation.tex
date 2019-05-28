@@ -1,0 +1,219 @@
+\documentclass[12pt, xcolor={usenames,dvipsnames,svgnames,x11names,table}]{beamer}
+
+%%%%% make text revisible when compiled with XeLaTeX %%%%%
+\makeatletter 
+\def\beamer@framenotesbegin{% at beginning of slide
+     \usebeamercolor[fg]{normal text}
+     \gdef\beamer@noteitems{}% 
+     \gdef\beamer@notes{}% 
+}
+\makeatother
+
+%%%%% packages %%%%%
+\usepackage{lipsum}					% für Testtexte
+\usepackage{graphicx}				% für Bilder
+\usepackage{geometry}				% für Seitenränder
+\usepackage[utf8]{inputenc}			% für Zeichencodierung
+\usepackage[T1]{fontenc}			% für Silbentrennung
+\usepackage[english,ngerman]{babel}	% für Dokumentensprache
+\usepackage{amsmath}				% für colle Mathesachen
+\usepackage{amssymb}				% für colle Mathesachen
+\usepackage{listings}				% für Programmiercode
+\usepackage{tabularx}				% für bessere Tabellen
+%\usepackage{subcaption}			% für Untertitel von Unterbildern
+\usepackage{ulem}					% für Unterstreichungen usw.
+%\usepackage{pifont}				% für tolle Symbole (Zapf Dingbats)
+%\usepackage{enumerate}				% für bessere Aufzählungen
+%\usepackage[section]{placeins}		% für Floats (setzt automatisch \FloatBarrier vor jeder neuen Section)
+%\usepackage{tocloft}				% für Inhaltverzeichniseintrage ohne Nummerierung und Existenz im Text
+\usepackage{pgfpages}				% für Dual-Screen-Präsentationen
+\usepackage{hyperref}
+
+%%%%% presentation template %%%%%
+\setbeamertemplate{footline}[text line]{\parbox{\linewidth}{\vspace*{-8pt}Raumzeitliche Analyse von Twitter Daten\hfill\insertshortauthor\hfill\insertpagenumber}}
+\setbeamertemplate{navigation symbols}{}
+
+%%%%% presentation options %%%%%
+%\setbeameroption{show notes on second screen = right}	% render note page to the right of frame
+\hypersetup{pdfstartview={Fit}} 						% fits the presentation to the window when first displayed
+\graphicspath{{pictures/}}								% picture path
+
+%%%%% presentation theme %%%%%
+\usetheme{Berkeley}
+\usecolortheme{default}
+
+%%%%% presentation logo %%%%%
+%\logo{\includegraphics[height=1.9cm]{picture}}
+
+%%%%% presentation informations %%%%%
+\title{Raumzeitliche Analyse von Twitter Daten}
+\subtitle{Softwareentwicklungprojekt I}
+\author{Niklas Baumbach, Felix Juch und Martin Immel}
+\date{}
+
+%%%%% listing style %%%%%
+\lstdefinestyle{mystyle}{
+	basicstyle = \scriptsize\ttfamily,
+	breaklines = true,
+	postbreak = \text{$\hookrightarrow$},
+	numbers = left,
+	numbersep = 10pt,
+	numberstyle = \color{Gray},
+	commentstyle = \color{DarkSlateGrey},
+	stringstyle = \color{Purple},
+	otherkeywords = {},
+	keywords = [2]{},
+	keywordstyle = {\color{Blue}},
+	keywordstyle = [2]{\color{OliveGreen}},
+	xleftmargin = .05\textwidth,
+	literate={ä}{{\"a}}1 {ö}{{\"o}}1 {ü}{{\"u}}1 {ß}{{\ss}}1 {Ü}{{\"U}}1 {Ä}{{\"A}}1 {Ö}{{\"O}}1,
+	escapeinside={[*}{*]}
+}
+
+
+%%%%% main %%%%%
+\begin{document}
+	\begin{frame}
+	 	\titlepage
+	\end{frame}	
+	
+	
+	\section{Inhalt des Projekts}
+	\begin{frame}{Inhalt des Projekts}{}
+		\textbf{Inhalte:}\\
+		\begin{itemize}
+			\item raumzeitliche Auswertung von Twitterdaten zur Detektion und Analyse von Naturkatastrophen
+			\item Clustern der geo-lokalisierten Tweets mit Krisenbezug
+			\item Implementierung eines geeigneten Clustering-Algorithmus $\rightarrow$ FDCA (\textit{Fast Density Clustering Algorithm})
+			\item Implementierung eines Frameworks zum Test des Algorithmus und zur Simulation
+		\end{itemize}
+	\end{frame}
+	
+	
+	\section{Stakeholder}
+	\begin{frame}{Stakeholder}{}
+		\begin{columns}
+			\begin{column}{.5\textwidth}
+				\center \includegraphics[width=.9\textwidth]{dlr}
+			\end{column}
+			\begin{column}{.5\textwidth}
+				\center \includegraphics[width=.8\textwidth]{fsu}
+			\end{column}
+		\end{columns}\bigskip
+		\textbf{Betreuer:} Jens Kersten und Friedericke Klan
+	\end{frame}
+	
+	
+	\section{Team-Organisation}
+	\begin{frame}{Team-Organisation}
+		\begin{columns}[onlytextwidth]
+			\begin{column}{.5\textwidth}
+				\textbf{Niklas:}
+				\begin{itemize}
+					\item
+				\end{itemize}
+			\end{column}
+			
+			\begin{column}{.5\textwidth}
+				\textbf{Felix und Martin:}
+				\begin{itemize}
+					\item
+				\end{itemize}
+			\end{column}
+		\end{columns}\bigskip\bigskip
+		\textbf{Investierte Zeit:} 10 bis 15 Stunden
+	\end{frame}
+	
+	
+	\section{Ziele und geplante Funktionalitäten}
+	\begin{frame}{Ziele und geplante Funktionalitäten}{}
+		\begin{itemize}
+			\item Fertiger Algorithmus zum Clustern von Twitter-Daten (raumzeitlich und kategorisch)
+			\item Exemplarische Anwendung auf Daten von Hurrikan Florence
+			\item Integration in das System des DLR (z.B. \glqq Event Detection Viewer\grqq oder \glqq Kibana\grqq)
+		\end{itemize}
+	\end{frame}
+	
+	
+	\section{Verwendete Technologien}
+	\begin{frame}{Verwendete Technologien}{}
+		\center
+		\includegraphics[scale=.3, clip=true, trim=0mm 40mm 0mm 40mm]{github}\\
+		\includegraphics[scale=.15, clip=true, trim=0mm 30mm 0mm 0mm]{python}\hspace{10cm}
+		
+		\begin{columns}[c, onlytextwidth]
+			\begin{column}{.5\textwidth}
+				\center \includegraphics[scale=.27]{pandas}
+			\end{column}
+			
+			\begin{column}{.5\textwidth}
+				\center \includegraphics[scale=.08]{json}
+			\end{column}
+		\end{columns}
+	\end{frame}
+	
+	
+	\section{Projektplanung}
+	\begin{frame}{Projektplanung}{}
+		\textbf{Phase 1:}
+		\begin{itemize}
+			\item Paper über den FDCA auswerten und verstehen
+			\item Geeignete Datasets für Tests finden
+		\end{itemize}\bigskip
+		
+		\textbf{Phase 2:}
+		\begin{itemize}
+			\item Implementierung eines Frameworks zur Validierung des Algorithmus und Simulation
+			\item Implementierung des FDCA
+		\end{itemize}
+	\end{frame}
+	
+	\begin{frame}{Projektplanung}{}
+		\textbf{Phase 3:}
+		\begin{itemize}
+			\item Evaluierung der Ergebnisse unseres Algorithmus im Vergleich zum Paper
+			\item Anwendung des Algorithmus auf die Twitter-Daten zum Hurrikan Florence
+		\end{itemize}\bigskip
+		
+		\textbf{Phase 4:}
+		\begin{itemize}
+			\item Integration des Algorithmus in das System des DLR
+			\item evtl. Implementierung weiterer Clustering-Algorithmen
+		\end{itemize}
+	\end{frame}
+	
+	
+	\section{Aufgetretene Probleme}
+	\begin{frame}{Aufgetretene Probleme}{}
+		Folgende Probleme sind während des Projekts aufgetreten:
+		
+		\begin{itemize}
+			\item 
+		\end{itemize}
+	\end{frame}
+	
+	\begin{frame}{Aufgetretene Probleme}{Umstrukturierung der Phasen}
+		\textbf{Phase 1:} \sout{test} $\longrightarrow$ sjfhksdf\bigskip\\
+		\textbf{Phase 2:} \sout{test} $\longrightarrow$ sjfhksdf\bigskip\\
+		\textbf{Phase 3:} \sout{test} $\longrightarrow$ sjfhksdf\bigskip\\
+		\textbf{Phase 4:} \sout{test} $\longrightarrow$ sjfhksdf
+	\end{frame}
+	
+	
+	\section{}
+	\begin{frame}{Noch Fragen?}
+		\includegraphics[width=\textwidth]{fragen}
+	\end{frame}
+\end{document}
+
+%%%%% empty frame with notes %%%%%
+
+%	\begin{frame}{}{}
+%		\note{
+%			\begin{itemize}
+%				\item
+%			\end{itemize}
+%		}
+%		
+%		
+%	\end{frame}
