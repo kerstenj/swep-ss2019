@@ -92,19 +92,21 @@
 	\begin{frame}{Inhalt des Projekts}{Clustering}
 		\textbf{Clustering:}
 		\begin{itemize}
-			\item Bestimmung der Elementgruppen eines Datensatzes
-			\item Einteilung der Elemente in Gruppen mit ähnlichen Eigenschaften
+			\item Bestimmung der Elementgruppen eines Datensatzes - Cluster
+			\item Einteilung der Elemente in Gruppen mit ähnlichen Eigenschaften - Clustering
 			\item Zugehörigkeit wird über die Bestimmung eines mehrdimensionalen Distanzma\ss es festgelegt
 		\end{itemize}\bigskip
 	\end{frame}
 	
 	\begin{frame}{Inhalt des Projekts}{FDCA}
 		\textbf{FDCA:}
+		
 		\begin{itemize}
 			\item funktioniert für numerische und kategorische Daten
 			\item errechnet die Dichte der Datenpunkte
-			\item legt Clusterzentren fest (hohe Dichte, gro"se Distanz zu anderen Clusterzentren)
-			\item sortiert Noise-Punkte aus (geringe Dichte, gro"se Distanz zu anderen Clusterzentren)
+			\item bestimmen der kleinsten Distanz zu einem Datenpunkt höherer Dichte
+			\item legt Clusterzentren fest (hohe Dichte, gro"se Distanz zu Datenpunkt höherer Dichte)
+			\item sortiert Noise-Punkte aus (geringe Dichte, gro"se Distanz zu Datenpunkt höherer Dichte)
 		\end{itemize}
 	\end{frame}
 	
@@ -211,9 +213,9 @@
 		
 		\begin{itemize}
 			\item Sprachliche Unklarheiten im Paper
+			\item Verwendung Funktionen im Paper ohne Definition
 			\item keine Zwischenergebnisse des Algorithmus im Paper
-			\item Verwendung von Formeln bzw. Funktionen im Paper ohne Definition
-			\item keine Rückmeldung auf Anfragen an die Authoren
+			\item keine Rückmeldung auf Anfragen an die Autoren
 			\item \glqq lange\grqq\ Einarbeitungszeit in Pandas
 		\end{itemize}
 	\end{frame}
