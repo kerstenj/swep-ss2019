@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 import distance
 import setting as s
 
@@ -36,29 +37,70 @@ def getDistances(row):
     return pd.DataFrame(temp)
     #return pd.Series(temp)
 
-#def calcCZ():
+def calcCZ():
+    CZ=list()
+    average=s.df["maphd"].mean()
+
+    Dens=s.df["Density"].sort_values(axis=0,ascending=False)
+    maphd=s.df["maphd"].sort_values(axis=0,ascending=False)
+    # performance option:
+    # Dens.to_numpy()
+    #
+    # #Dens=s.df["Density"].sort_values("Density",0,False)
+    #print(Dens)
+    # # print(Dens[0])
+    # print(Dens.iat[0])
+    # print(Dens.iat[1])
+    # print(Dens.iat[2])
+    # print()
+    # print(list(Dens.index.values))
+    # print(maphd)
+    # print(maphd.keys())
+    # print(maphd.index[0])
+    i=0
+
+    for row_index, row in Dens.items():
+
+        if row_index==maphd.index[i]:
+            CZ.append(row_index)
+            i+=1
+            continue
+        if pd.isna(maphd[row_index]):
+            CZ.append(row_index)
+            continue
+        if maphd[row_index]>average:
+            CZ.append(row_index)
+
+        break
+
+        #print("index: ", row_index,"item: ", row)
 
 
-#     average=df["maphd"].mean()
+    return CZ
 
 def getClusterZentren():
     #Berechne Distanzen zwischen allen Datenpunkten
     s.df["Distances"]=s.df.apply(getDistances, axis=1)
-    #print(s.df["Distances"])
+
 
     #Berechne die Dichte der Datenpunkte abhängig von der Grenzdistanz dc
     s.df["Density"]=s.df.apply(getDensity, axis=1)
 
-    #print(s.df["Density"])
+
      # maphd - Minimaler Abstand zu einem Punkt höherer Dichte
     s.df["nextNode"]=s.df.apply(getMaphdIndex, axis=1)
 
     s.df["maphd"]=s.df.apply(getMaphd, axis=1)
-    print(s.df["nextNode"])
-    print(s.df["maphd"])
-    print(s.df["Distances"])
-    #s.df["maphd"]
-    # CZ=calcCZ()
+    # print(s.df["nextNode"])
+    # print(s.df["maphd"])
+    # print(s.df["Distances"])
+
+    #delete Distances-Column
+    s.df.drop("Distances", axis=1, inplace=True)
+    print(s.df)
+
+    CZ=calcCZ()
+    print(CZ)
     # #df=df.sort_values("maphd",0,False) #Sort by density
     #print (s.df)
 
