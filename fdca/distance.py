@@ -23,10 +23,11 @@ def dist(node1, node2): #Zwei expliziter Punkte
                 sum += abs(node1[j] - node2[j]) / (s.info.MaxVek[j] - s.info.MinVek[j])
         else:
             if node1[j] != None and node2[j] != None:
-                print("ups")
+                print("ups - kathegorische ditanz noch implementieren")
         j+=1
 
-
+    if sum==0:
+        return None
     return sum / w
 
 def disthd(node1, node2): #Zwei expliziter Punkte

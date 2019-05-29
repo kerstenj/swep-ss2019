@@ -14,8 +14,8 @@ class infoC:
 
 s.init()
 
-s.dc=0.05
-s.df=reader.readTxtFileW('Softi/AggregationTest.txt')
+s.dc=0.5
+s.df=reader.readTxtFileW('fdca/AggregationTest2.txt')
 s.info=infoC(s.df)
 s.info.SpaltenAnz=2 #Nur für Test !! # TODO: delete
 s.info.ParameterListe=["num","num"]
