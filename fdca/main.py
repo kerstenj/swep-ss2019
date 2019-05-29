@@ -14,6 +14,7 @@ class infoC:
 
 s.init()
 
+
 s.dc=0.5
 s.df=reader.readTxtFileW('fdca/AggregationTest2.txt')
 s.info=infoC(s.df)

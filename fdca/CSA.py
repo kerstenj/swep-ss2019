@@ -50,6 +50,7 @@ def getClusterZentren():
 
     #Berechne die Dichte der Datenpunkte abhängig von der Grenzdistanz dc
     s.df["Density"]=s.df.apply(getDensity, axis=1)
+
     #print(s.df["Density"])
      # maphd - Minimaler Abstand zu einem Punkt höherer Dichte
     maphdVek=s.df.apply(getMaphd, axis=1)

@@ -26,6 +26,7 @@ def dist(node1, node2): #Zwei expliziter Punkte
                 print("ups - kathegorische ditanz noch implementieren")
         j+=1
 
+
     if sum==0:
         return None
     return sum / w
