@@ -1,9 +1,10 @@
 import pandas as pd
 import setting as s
+from numba import njit
 # import reader
 
-global numeric_
 
+@njit
 def dist(node1, node2): #Zwei expliziter Punkte
     w = sum = j = 0
 
@@ -17,13 +18,13 @@ def dist(node1, node2): #Zwei expliziter Punkte
 
     for i in s.info.ParameterListe:
 
-        if i == "num":
+        if i == 1:
             if node1[j] != None and node2[j] != None:
                 w += 1
                 sum += abs(node1[j] - node2[j]) / (s.info.MaxVek[j] - s.info.MinVek[j])
         else:
             if node1[j] != None and node2[j] != None:
-                print("ups - kathegorische ditanz noch implementieren")
+                print("Fehler - kathegorische ditanz noch implementieren")
         j+=1
 
 

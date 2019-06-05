@@ -7,34 +7,46 @@ df=None
 CZ=None
 
 
-def getDensity(row):
+def getDensity(Dist):
     global dc
-    #Dist=s.df.apply(distance.dist,node2=row, axis=1)
-    Dist=row["Distances"]
-    #print("Dichte: ", Dist[Dist < s.dc].count() )
-    return Dist[Dist < dc].count()
+
+    return Dist[Dist <= dc].count()
 
     #(Dist < s.dc).values.sum() - Laufzeitmäßig überprüfen
+
+
 
 def getMaphdIndex(row):
     global df
 
-    # Distances where this Density < other Density
-    temp=row[s.info.SpaltenAnz+1][row[s.info.SpaltenAnz+2] < df["Density"] ]
+    # Distances where this Density < other Density or <=
+    temp=row["Distances"][row["Density"] < df["Density"] ]
 
     if (temp.empty):
         return None
 
     return temp.idxmin()[0]
 
+# Vectorized try:
+# def getMaphdIndex(Dist, Dens):
+#     global df
+#
+#     # Distances where this Density < other Density
+#     temp=Dist[Dens < df["Density"] ]
+#
+#     if (temp.empty):
+#         return None
+#
+#     return temp.idxmin()[0]
+
 def getMaphd(row):
     # maphd Index
-    index=row[s.info.SpaltenAnz+3]
+    index=row["nextNode"]
     if pd.isna(index):
        return None
 
     # Distances
-    temp=row[s.info.SpaltenAnz+1][0]
+    temp=row["Distances"][0]
 
     return temp[index]
 
@@ -89,12 +101,6 @@ def ClusteringforIndex(index):
     else:
         return ClusteringforIndex()
 
-def getAverageDistance():
-
-
-    return
-
-
 def getClusterZentren(dcP):
     global dc
     global df
@@ -106,26 +112,29 @@ def getClusterZentren(dcP):
     print("...")
 
     #Berechne die Dichte der Datenpunkte abhängig von der Grenzdistanz dc
-    df["Density"]=df.apply(getDensity, axis=1)
-
+    df["Density"]=np.vectorize(getDensity)(df['Distances'])
 
      # maphd - Minimaler Abstand zu einem Punkt höherer Dichte
     df["nextNode"]=df.apply(getMaphdIndex, axis=1)
+    # Vectorized Try:
+    # #df["nextNode"]=np.vectorize(getMaphdIndex)(df["Distances"], df["Density"])
+
     df["maphd"]=df.apply(getMaphd, axis=1)
 
 
-    #delete Distances-Column
-    df.drop("Distances", axis=1, inplace=True)
+    #delete Distances-Column - dont - needed for average distance
+    #df.drop("Distances", axis=1, inplace=True)
 
 
     CZ=calcCZ()
 
     df["ClusterCenter"]=df.apply(Clustering, axis=1)
 
-    print(df.sort_values("ClusterCenter",axis=0,ascending=False))
-    print(CZ)
+    #print(df.sort_values("ClusterCenter",axis=0,ascending=False))
+    print("CZ: ", str(CZ))
+
     return CZ
-    # #df=df.sort_values("maphd",0,False) #Sort by density
+    #df=df.sort_values("maphd",0,False) #Sort by density
     #print (s.df)
 
 
