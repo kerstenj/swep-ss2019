@@ -16,9 +16,9 @@ class infoC:
 s.init()
 
 
-s.df=reader.readTxtFileK('fdca/test.txt')
+#s.df=reader.readTxtFileK('fdca/test.txt')
 #s.df=reader.readTxtFileW('fdca/Aggregation.txt')
-#s.df=reader.readTxtFileK('datasets/Iris/iris.data')
+s.df=reader.readTxtFileK('datasets/Iris/iris.data')
 #only for this example:
 
 
@@ -26,24 +26,28 @@ s.df=reader.readTxtFileK('fdca/test.txt')
 s.info=infoC(s.df)
 
 #Parameter List: 0 - num   / 1- cat
-#s.info.ParameterListe=[1,1,1,1]
-s.info.ParameterListe=[1,1]
+s.info.ParameterListe=[0,0,0,0]
+#s.info.ParameterListe=[0,0]
 #print(info.ZeilenAnz, info.SpaltenAnz, info.MinVek, info.MaxVek)
+
 
 dc=calcdc.getbestdc()
 
-print(s.df["x"],s.df["y"],s.df["Distances"][0],s.df["Density"],s.df["nextNode"])
+#print(s.df["x"],s.df["y"],s.df["Distances"][0],s.df["Density"],s.df["nextNode"])
+print(s.df["Distances"][0],s.df["Density"],s.df["maphd"],s.df["nextNode"])
+print("means: ", s.df["Density"].mean(),s.df["maphd"].mean())
+
 # plt.plot(dc)
 # plt.show()
 
 
 
-fig, ax= plt.subplots()
-scatter = ax.scatter(s.df["x"],s.df["y"],c=s.df["ClusterCenter"])
-
-ax.set_xlabel('x')
-ax.set_ylabel('y')
-
-ax.grid(True)
-fig.tight_layout()
-plt.show()
+# fig, ax= plt.subplots()
+# scatter = ax.scatter(s.df["x"],s.df["y"],c=s.df["ClusterCenter"])
+#
+# ax.set_xlabel('x')
+# ax.set_ylabel('y')
+#
+# ax.grid(True)
+# fig.tight_layout()
+# plt.show()

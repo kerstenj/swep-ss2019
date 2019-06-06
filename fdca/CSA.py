@@ -19,7 +19,7 @@ def getDensity(Dist):
 def getMaphdIndex(row):
     global df
 
-    # Distances where this Density < other Density or <=
+    # Distances where this density < other density or <= - without itself
     temp=row["Distances"][row["Density"] < df["Density"] ]
 
     if (temp.empty):
@@ -73,6 +73,7 @@ def calcCZ():
             continue
         if maphd[row_index]>average:
             CZ.append(row_index)
+            continue
 
         break
 

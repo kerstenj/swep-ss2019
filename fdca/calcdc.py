@@ -51,13 +51,17 @@ def dist(node1, node2): #Zwei expliziter Punkte
 
     for i in s.info.ParameterListe:
 
-        if i == 1:
+        if i == 0:
             if node1[j] != None and node2[j] != None:
                 w += 1
                 sum += abs(node1[j] - node2[j]) / (s.info.MaxVek[j] - s.info.MinVek[j])
-        else:
+        else:#i == 1:
             if node1[j] != None and node2[j] != None:
-                print("ups - kathegorische ditanz noch implementieren")
+                w+=1
+                if node1[j]==node2[j]:
+                    sum+=0
+                else:
+                    sum+=1
         j+=1
 
 
@@ -98,7 +102,7 @@ def getbestdc():
     # dclow=N*0.01
     # dchigh=N*0.2
 
-    dclow=dchigh=0.0045
+    dclow=dchigh=0.25
     step=1
     #0.023   0.04   0.06
 
