@@ -1,106 +1,123 @@
 import pandas as pd
 import numpy as np
 import setting as s
+from numba import njit
 
 dc=None
 df=None
 CZ=None
 
+@njit
+def getDensity(Dist ,dc):
+    distCz=np.zeros(Dist.shape[0])
 
-def getDensity(Dist):
-    global dc
+    for i in range(Dist.shape[0]):
+        sum=0
+        for j in range(i+1, Dist.shape[0]):
+            if Dist[i,j] <= dc:
+                distCz[i]+=1
+                distCz[j]+=1
+    return distCz
 
-    return Dist[Dist <= dc].count()
+@njit
+def getMaphdIndex(Dist, Dens):
+    nextNode=np.full(Dist.shape[0],-1)
 
-    #(Dist < s.dc).values.sum() - Laufzeitmäßig überprüfen
+
+    for i in range(Dist.shape[0]):
+        for j in range(Dist.shape[0]):
+            # Distances where this density < other density or <= - without itself
+            #if Dens[i]<=Dens[j] and i!=j:
+            if Dens[i]<Dens[j]:
+                if nextNode[i]==-1:
+                    nextNode[i]=j
+                elif Dist[i,nextNode[i]] > Dist[i,j]:
+                    nextNode[i]=j
+
+    return nextNode
+
+@njit
+def getMaphd(Dist,nextNode):
+    maphd=np.zeros(Dist.shape[0])
+    for i in range (Dist.shape[0]):
+        if nextNode[i]==-1:
+            maphd[i]=1
+        else:
+            maphd[i]=Dist[i,nextNode[i]]
+
+    return maphd
+
+
+# to mak calcCZ work with numba - prob. to inefficient
+# @njit
+# def deleteDP(df, i, len):
+#     df=np.delete(df,2*len+i)
+#     df=np.delete(df,len+i)
+#     df=np.delete(df,i)
+#     df=df.reshape(3,len-1)
+#     return df
+
+
+def calcCZ(Dist, df):
+    CZ=[]
+    len=Dist.shape[0]
+
+    i=0
+    while True:
+        #if maphd = max(maphd) (paper - delta)
+        if df[1,i]>=df[1].max():
+            CZ.append(int(df[2,i]))
+            df=np.delete(arr=df,obj=i,axis=1)
+            #Laufzeitüerprüfung bei größeren Itterationen mit numba:
+            # df=deleteDP(df,i,len)
+            # len-=1
+        # if maphd >= average maphd
+        elif df[1,i]>=df[1].mean():
+            CZ.append(int(df[2,i]))
+            df=np.delete(arr=df,obj=i,axis=1)
+            # df=deleteDP(df,i,len)
+            # len-=1
+        else:
+            return CZ
 
 
 
-def getMaphdIndex(row):
-    global df
 
-    # Distances where this density < other density or <= - without itself
-    temp=row["Distances"][row["Density"] < df["Density"] ]
-
-    if (temp.empty):
-        return None
-
-    return temp.idxmin()[0]
-
-# Vectorized try:
-# def getMaphdIndex(Dist, Dens):
+#
+# def Clustering(row):
+#     # print("Start Rows:")
+#     # print(row, row.name)
+#     global CZ
 #     global df
 #
-#     # Distances where this Density < other Density
-#     temp=Dist[Dens < df["Density"] ]
 #
-#     if (temp.empty):
-#         return None
+#     if row.name in CZ:
+#         return row.name
+#     else:
+#         return Clustering(df.loc[row["nextNode"],:])
 #
-#     return temp.idxmin()[0]
+#
+@njit
+def Clustering(nextNode, CZ):
+    res=np.full(nextNode.shape[0],-1)
+    i=-1
+    temp=[]
 
-def getMaphd(row):
-    # maphd Index
-    index=row["nextNode"]
-    if pd.isna(index):
-       return None
+    for cz in CZ:
+        res[cz]=cz
 
-    # Distances
-    temp=row["Distances"][0]
+    for todo in res:
+        i+=1
+        if todo == -1:
+            k=i
+            while res[k]==-1:
+                temp.append(k)
+                k=nextNode[k]
+            cz=res[k]
+            while (len(temp)!=0):
+                res[temp.pop()]=cz
 
-    return temp[index]
-
-
-
-def calcCZ():
-    global df
-    CZ=list()
-    average=df["maphd"].mean()
-
-    Dens=df["Density"].sort_values(axis=0,ascending=False)
-    maphd=df["maphd"].sort_values(axis=0,ascending=False)
-
-    maphdIndex=0
-    #prob. faster iteration possible - needed?
-    for row_index, row in Dens.items():
-
-        if row_index==maphd.index[maphdIndex]:
-            CZ.append(row_index)
-            maphdIndex+=1
-            continue
-        if pd.isna(maphd[row_index]):
-            CZ.append(row_index)
-            continue
-        if maphd[row_index]>average:
-            CZ.append(row_index)
-            continue
-
-        break
-
-        #print("index: ", row_index,"item: ", row)
-
-
-    return CZ
-
-def Clustering(row):
-    # print("Start Rows:")
-    # print(row, row.name)
-    global CZ
-    global df
-
-
-    if row.name in CZ:
-        return row.name
-    else:
-        return Clustering(df.loc[row["nextNode"],:])
-
-
-def ClusteringforIndex(index):
-    global CZ
-    if index in CZ:
-        return index
-    else:
-        return ClusteringforIndex()
+    return res
 
 def getClusterZentren(dcP):
     global dc
@@ -113,31 +130,33 @@ def getClusterZentren(dcP):
     print("...")
 
     #Berechne die Dichte der Datenpunkte abhängig von der Grenzdistanz dc
-    df["Density"]=np.vectorize(getDensity)(df['Distances'])
-
-     # maphd - Minimaler Abstand zu einem Punkt höherer Dichte
-    df["nextNode"]=df.apply(getMaphdIndex, axis=1)
-    # Vectorized Try:
-    # #df["nextNode"]=np.vectorize(getMaphdIndex)(df["Distances"], df["Density"])
-
-    df["maphd"]=df.apply(getMaphd, axis=1)
+    df["Density"]=getDensity(s.Dist, dc)
 
 
-    #delete Distances-Column - dont - needed for average distance
-    #df.drop("Distances", axis=1, inplace=True)
+    # maphd - Minimaler Abstand zu einem Punkt höherer Dichte (Delta im Paper)
+    # nextNode = index of maphd
+    df["nextNode"]=getMaphdIndex(s.Dist, df["Density"].to_numpy())
+
+    # print(df.nextNode)
+    # print(df[df["nextNode"]==-1])
+    # print(df["Density"].sort_values(axis=0,ascending=False))
+
+    df["maphd"]=getMaphd(s.Dist,df["nextNode"].to_numpy())
+
+    TempDf=df.loc[:, ["Density", "maphd"]].sort_values("Density", axis=0, ascending=False)
+    TempDf["Index"]=TempDf.index
+
+    CZ=np.array(calcCZ(s.Dist, TempDf.to_numpy().T))
+    print(CZ)
+    #CZ=calcCZ(s.Dist, TempDf["Density"].to_numpy(), TempDf["maphd"].to_numpy(), TempDf["Index"].to_numpy())
 
 
-    CZ=calcCZ()
+    df["ClusterCenter"]=Clustering(df["nextNode"].to_numpy(),CZ)
 
-    df["ClusterCenter"]=df.apply(Clustering, axis=1)
-
-    #print(df.sort_values("ClusterCenter",axis=0,ascending=False))
-    print("CZ: ", str(CZ))
+    # print(df.sort_values("ClusterCenter",axis=0,ascending=False))
+    # print("CZ: ", str(CZ))
 
     return CZ
-    #df=df.sort_values("maphd",0,False) #Sort by density
-    #print (s.df)
-
 
 
 #Wichtige Funktionen:

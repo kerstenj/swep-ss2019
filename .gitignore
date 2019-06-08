@@ -4,3 +4,5 @@ environment/env
 .vscode/
 fdca/Merken.txt
 testingfdca
+fdca/CSAOld.py
+fdca/calcdcOld.py
