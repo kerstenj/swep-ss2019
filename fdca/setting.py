@@ -5,3 +5,4 @@ def init():
     global info
     global dc
     global Dist
+    global CZ

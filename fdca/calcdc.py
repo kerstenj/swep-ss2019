@@ -65,9 +65,9 @@ def getAverageDistance(CZ):
     #     print(temp[Distances].at[CZ, "Distances"])
 
     # ggf ohne len(CZ)
-    return sum
+    return sum/len(CZ)
 
-def getbestdc():
+def getbestdc(getZ, trydc):
     #Berechne Distanzen zwischen allen Datenpunkten
     s.Dist=getDistances(s.df.to_numpy(), s.info.ParameterListe, s.info.MinVek.to_numpy(), s.info.MaxVek.to_numpy())
 
@@ -79,13 +79,14 @@ def getbestdc():
     # dclow=N*0.01
     # dchigh=N*0.2
 
-    # dclow=dchigh=0.05
-    # step=1
-    #0.023   0.04   0.06
+    if getZ:
+        dclow=0.003
+        dchigh=0.2
+        step=(dchigh-dclow)/100
 
-    dclow=0.01
-    dchigh=0.5
-    step=(dchigh-dclow)/100
+    else:
+        dclow=dchigh=trydc
+        step=1
 
 
     s.dc=dclow
@@ -103,6 +104,7 @@ def getbestdc():
         i+=1
 
         ClusterZent=CSA.getClusterZentren(s.dc)
+        s.CZ=ClusterZent
         #print(CSA.df.sort_values("ClusterCenter",axis=0,ascending=False))
         Z=getAverageDistance(ClusterZent)
         print("Z: ", Z)

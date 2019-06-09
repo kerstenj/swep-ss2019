@@ -50,35 +50,36 @@ def getMaphd(Dist,nextNode):
 
 # to mak calcCZ work with numba - prob. to inefficient
 # @njit
-# def deleteDP(df, i, len):
-#     df=np.delete(df,2*len+i)
-#     df=np.delete(df,len+i)
+# def deleteDP(df, i, size):
+#     df=np.delete(df,2*size+i)
+#     df=np.delete(df,size+i)
 #     df=np.delete(df,i)
-#     df=df.reshape(3,len-1)
+#     df=df.reshape(3,size-1)
 #     return df
 
 
 def calcCZ(Dist, df):
     CZ=[]
-    len=Dist.shape[0]
+    #size=Dist.shape[0]
 
     i=0
-    while True:
+    while len(df[1])>0:
         #if maphd = max(maphd) (paper - delta)
         if df[1,i]>=df[1].max():
             CZ.append(int(df[2,i]))
             df=np.delete(arr=df,obj=i,axis=1)
             #Laufzeitüerprüfung bei größeren Itterationen mit numba:
-            # df=deleteDP(df,i,len)
-            # len-=1
+            # df=deleteDP(df,i,size)
+            # size-=1
         # if maphd >= average maphd
         elif df[1,i]>=df[1].mean():
             CZ.append(int(df[2,i]))
             df=np.delete(arr=df,obj=i,axis=1)
-            # df=deleteDP(df,i,len)
-            # len-=1
+            # df=deleteDP(df,i,size)
+            # size-=1
         else:
-            return CZ
+            break
+    return CZ
 
 
 
