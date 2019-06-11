@@ -3,6 +3,7 @@ import pandas as pd
 import CSA
 import setting as s
 from numba import njit
+import math
 
 @njit
 def dist(node1, node2, ParameterListe, MaxVek, MinVek): #Zwei expliziter Punkte
@@ -19,7 +20,8 @@ def dist(node1, node2, ParameterListe, MaxVek, MinVek): #Zwei expliziter Punkte
         if i == 0:
             if not (np.isnan(node1[j]) or np.isnan(node2[j])):
                 w += 1
-                sum += abs(node1[j] - node2[j]) / (MaxVek[j] - MinVek[j])
+                sum += (abs(node1[j] - node2[j]) / (MaxVek[j] - MinVek[j]))**2
+                # sum += abs(node1[j] - node2[j]) / (MaxVek[j] - MinVek[j])
 
         else:
             if not (np.isnan(node1[j]) or np.isnan(node2[j])):
@@ -31,7 +33,8 @@ def dist(node1, node2, ParameterListe, MaxVek, MinVek): #Zwei expliziter Punkte
 
     if sum==0:
         return 0
-    return sum / w
+    # return sum / w
+    return math.sqrt(sum) / w
 
 
 @njit
@@ -64,7 +67,7 @@ def getAverageDistance(CZ):
     #     print("temp", CZ)
     #     print(temp[Distances].at[CZ, "Distances"])
 
-    # ggf ohne len(CZ)
+    # ggf ohne/mit teilen durch len(CZ)
     return sum/len(CZ)
 
 def getbestdc(getZ, trydc):

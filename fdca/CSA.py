@@ -47,57 +47,124 @@ def getMaphd(Dist,nextNode):
 
     return maphd
 
-
-# to mak calcCZ work with numba - prob. to inefficient
-# @njit
-# def deleteDP(df, i, size):
-#     df=np.delete(df,2*size+i)
-#     df=np.delete(df,size+i)
-#     df=np.delete(df,i)
-#     df=df.reshape(3,size-1)
-#     return df
-
+# def calcCZ(Dist, df):
+#     CZ=[]
+#     #size=Dist.shape[0]
+#     averageDens=df[0].mean()
+#
+#     print()
+#     print()
+#     i=0
+#     Test=0
+#     while len(df[1])>0 :
+#         #if maphd = max(maphd) (paper - delta)
+#         print()
+#         print()
+#         print("DP: ", Test)
+#         Test+=1
+#         print(df[0,i],df[1,i],df[2,i])
+#         print("max",df[1].max())
+#         print("average",df[1].mean())
+#         if df[1,i]>=df[1].max():
+#             print("greater max")
+#             CZ.append(int(df[2,i]))
+#             df=np.delete(arr=df,obj=i,axis=1)
+#             #Laufzeitüerprüfung bei größeren Itterationen mit numba:
+#             # df=deleteDP(df,i,size)
+#             # size-=1
+#         # if maphd >= average maphd
+#         elif df[1,i]>=df[1].mean():
+#             print("greater average")
+#             CZ.append(int(df[2,i]))
+#             df=np.delete(arr=df,obj=i,axis=1)
+#             # df=deleteDP(df,i,size)
+#             # size-=1
+#         else:
+#             break
+#     print("break")
+#     print(df)
+#     return CZ
 
 def calcCZ(Dist, df):
     CZ=[]
-    #size=Dist.shape[0]
+    # size=Dist.shape[0]
+    averageDens=df[0].mean()
 
+    # print()
+    # print()
     i=0
-    while len(df[1])>0:
+    # Test=0
+    lastDens=[]
+    lastIndex=[]
+    while len(df[1])>0 :
         #if maphd = max(maphd) (paper - delta)
-        if df[1,i]>=df[1].max():
+        # print()
+        # print()
+        # print("DP: ", Test)
+        # Test+=1
+        # print(df[0,i],df[1,i],df[2,i])
+        # print("max",df[0].max())
+        # print("average",df[0].mean())
+
+
+        if df[0,i] in lastDens:
+            # print()
+            # print("Übersprungen: ", df[2,i])
+            nextNodeIndex=lastDens.index(df[0,i])
+            # print(s.df.at[int(df[2,i]),"nextNode"])
+            s.df.at[int(df[2,i]),"nextNode"]=lastIndex[nextNodeIndex]
+            # print(s.df.at[int(df[2,i]),"nextNode"])
+            df=np.delete(arr=df,obj=i,axis=1)
+
+            continue
+        if df[0,i]>=df[0].max():
+            # print("greater max")
             CZ.append(int(df[2,i]))
+            lastDens.append(df[0,i])
+            lastIndex.append(df[2,i])
             df=np.delete(arr=df,obj=i,axis=1)
             #Laufzeitüerprüfung bei größeren Itterationen mit numba:
             # df=deleteDP(df,i,size)
             # size-=1
         # if maphd >= average maphd
-        elif df[1,i]>=df[1].mean():
+        elif df[0,i]>=df[0].mean():
+            # print("greater average")
             CZ.append(int(df[2,i]))
+            lastDens.append(df[0,i])
+            lastIndex.append(df[2,i])
             df=np.delete(arr=df,obj=i,axis=1)
             # df=deleteDP(df,i,size)
             # size-=1
         else:
             break
+    print("break")
+    print(df)
     return CZ
 
+# def calcCZ(Dist, df):
+#     CZ=[]
+#     #size=Dist.shape[0]
+#     averageDist=df[1].mean()
+#     maxDist=df[1].max()
+#
+#     i=0
+#     Test=0
+#     while len(df[1])>0 :
+#         if df[1,i]>=df[1].max():
+#             CZ.append(int(df[2,i]))
+#             df=np.delete(arr=df,obj=i,axis=1)
+#
+#         elif df[1,i]>=averageDist:
+#
+#             CZ.append(int(df[2,i]))
+#             df=np.delete(arr=df,obj=i,axis=1)
+#
+#         else:
+#             break
+#
+#     return CZ
 
 
-
-#
-# def Clustering(row):
-#     # print("Start Rows:")
-#     # print(row, row.name)
-#     global CZ
-#     global df
-#
-#
-#     if row.name in CZ:
-#         return row.name
-#     else:
-#         return Clustering(df.loc[row["nextNode"],:])
-#
-#
 @njit
 def Clustering(nextNode, CZ):
     res=np.full(nextNode.shape[0],-1)
@@ -144,7 +211,7 @@ def getClusterZentren(dcP):
 
     df["maphd"]=getMaphd(s.Dist,df["nextNode"].to_numpy())
 
-    TempDf=df.loc[:, ["Density", "maphd"]].sort_values("Density", axis=0, ascending=False)
+    TempDf=df.loc[:, ["Density", "maphd"]].sort_values("maphd", axis=0, ascending=False)
     TempDf["Index"]=TempDf.index
 
     CZ=np.array(calcCZ(s.Dist, TempDf.to_numpy().T))
@@ -158,13 +225,3 @@ def getClusterZentren(dcP):
     # print("CZ: ", str(CZ))
 
     return CZ
-
-
-#Wichtige Funktionen:
-#
-#   itterieren über df in anderen df
-#   s.df["Distances"].apply(printitnow)
-#
-#
-#Ausgabe eines df in einem anderen df:
-#print (s.df["Distances"][0])
