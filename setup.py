@@ -1,0 +1,29 @@
+from setuptools import setup
+
+setup(
+    name="FDCA",
+    version="0.1.0",
+    license="",
+    url="https://github.com/kerstenj/swep-ss2019",
+    author="",
+    author_email="",
+    packages=[
+        "fdca",
+        "environment",
+    ],
+    install_requires=[
+        "numpy",
+        "pandas",
+        "numba"
+    ],
+    setup_requires=[
+        "pytest-runner",
+    ],
+    tests_require=[
+        "pylint-quotes",
+        "pytest",
+        "pytest-codestyle",
+        "pytest-cov",
+        "pytest-pylint",
+    ],
+)

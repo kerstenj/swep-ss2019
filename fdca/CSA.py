@@ -1,52 +1,55 @@
 import pandas as pd
 import numpy as np
-import setting as s
+import setting
 from numba import njit
 
-dc=None
-df=None
-CZ=None
+
+dc = None
+df = None
+CZ = None
+
 
 @njit
-def getDensity(Dist ,dc):
-    distCz=np.zeros(Dist.shape[0])
+def get_density(dist, dc):
+    dist_Cz = np.zeros(dist.shape[0])
 
-    for i in range(Dist.shape[0]):
-        sum=0
-        for j in range(i+1, Dist.shape[0]):
-            if Dist[i,j] <= dc:
-                distCz[i]+=1
-                distCz[j]+=1
-    return distCz
+    for i in range(dist.shape[0]):
+        result = 0
+        for j in range(i+1, dist.shape[0]):
+            if dist[i, j] <= dc:
+                dist_Cz[i] += 1
+                dist_Cz[j] += 1
+    return dist_Cz
+
 
 @njit
-def getMaphdIndex(Dist, Dens):
-    nextNode=np.full(Dist.shape[0],-1)
+def get_maphd_index(dist, dens):
+    next_node = np.full(dist.shape[0], -1)
 
-
-    for i in range(Dist.shape[0]):
-        for j in range(Dist.shape[0]):
+    for i in range(dist.shape[0]):
+        for j in range(dist.shape[0]):
             # Distances where this density < other density or <= - without itself
-            #if Dens[i]<=Dens[j] and i!=j:
-            if Dens[i]<Dens[j]:
-                if nextNode[i]==-1:
-                    nextNode[i]=j
-                elif Dist[i,nextNode[i]] > Dist[i,j]:
-                    nextNode[i]=j
+            if dens[i] < dens[j]:
+                if next_node[i] == -1:
+                    next_node[i] = j
+                elif dist[i, next_node[i]] > dist[i, j]:
+                    next_node[i] = j
 
-    return nextNode
+    return next_node
+
 
 @njit
-def getMaphd(Dist,nextNode):
-    maphd=np.zeros(Dist.shape[0])
-    for i in range (Dist.shape[0]):
-        if nextNode[i]==-1:
-            maphd[i]=1
+def get_maphd(dist, next_node):
+    maphd = np.zeros(dist.shape[0])
+    for i in range(dist.shape[0]):
+        if next_node[i] == -1:
+            maphd[i] = 1
         else:
-            maphd[i]=Dist[i,nextNode[i]]
+            maphd[i] = dist[i, next_node[i]]
 
     return maphd
 
+<<<<<<< HEAD
 def calcCZ(Dist, df):
     CZ=[]
 
@@ -87,6 +90,33 @@ def calcCZ(Dist, df):
             lastIndex.append(df[2,i])
             df=np.delete(arr=df,obj=i,axis=1)
 
+=======
+
+def calc_CZ(dist, df):
+    CZ = []
+    average_dens = df[0].mean()
+
+    i = 0
+    last_dens = []
+    last_index = []
+    while len(df[1]) > 0:
+
+        if df[0, i] in last_dens:
+            next_node_index = last_dens.index(df[0, i])
+            setting.df.at[int(df[2, i]), "nextNode"] = last_index[next_node_index]
+            df = np.delete(arr=df, obj=i, axis=1)
+            continue
+        if df[0, i] >= df[0].max():
+            CZ.append(int(df[2, i]))
+            last_dens.append(df[0, i])
+            last_index.append(df[2, i])
+            df = np.delete(arr=df, obj=i, axis=1)
+        elif df[0, i] >= df[0].mean():
+            CZ.append(int(df[2, i]))
+            last_dens.append(df[0, i])
+            last_index.append(df[2, i])
+            df = np.delete(arr=df, obj=i, axis=1)
+>>>>>>> 07230df4f6a555310a08ab6fecd3886151ebe748
         else:
             break
     print("break")
@@ -95,62 +125,57 @@ def calcCZ(Dist, df):
 
 
 @njit
-def Clustering(nextNode, CZ):
-    res=np.full(nextNode.shape[0],-1)
-    i=-1
-    temp=[]
+def clustering(next_node, CZ):
+    res = np.full(next_node.shape[0], -1)
+    i = -1
+    temp = []
 
     for cz in CZ:
-        res[cz]=cz
+        res[cz] = cz
 
     for todo in res:
-        i+=1
+        i += 1
         if todo == -1:
-            k=i
-            while res[k]==-1:
+            k = i
+            while res[k] == -1:
                 temp.append(k)
-                k=nextNode[k]
-            cz=res[k]
-            while (len(temp)!=0):
-                res[temp.pop()]=cz
+                k = next_node[k]
+            cz = res[k]
+            while len(temp) != 0:
+                res[temp.pop()] = cz
 
     return res
 
+<<<<<<< HEAD
 def getClusterCenters(dcP):
+=======
+
+def get_cluster_centers(dc_p):
+>>>>>>> 07230df4f6a555310a08ab6fecd3886151ebe748
     global dc
     global df
     global CZ
-    dc=dcP
-    df=s.df
+    dc = dc_p
+    df = setting.df
 
     print("Test dc: ", dc)
     print("...")
 
-    #Berechne die Dichte der Datenpunkte abhängig von der Grenzdistanz dc
-    df["Density"]=getDensity(s.Dist, dc)
-
+    # Berechne die Dichte der Datenpunkte abhängig von der Grenzdistanz dc
+    df["Density"] = get_density(setting.Dist, dc)
 
     # maphd - Minimaler Abstand zu einem Punkt höherer Dichte (Delta im Paper)
-    # nextNode = index of maphd
-    df["nextNode"]=getMaphdIndex(s.Dist, df["Density"].to_numpy())
+    df["nextNode"] = get_maphd_index(setting.Dist, df["Density"].to_numpy())
 
-    # print(df.nextNode)
-    # print(df[df["nextNode"]==-1])
-    # print(df["Density"].sort_values(axis=0,ascending=False))
+    df["maphd"] = get_maphd(setting.Dist, df["nextNode"].to_numpy())
 
-    df["maphd"]=getMaphd(s.Dist,df["nextNode"].to_numpy())
+    temp_df = df.loc[:, ["Density", "maphd"]].sort_values(
+        "maphd", axis=0, ascending=False
+    )
+    temp_df["Index"] = temp_df.index
 
-    TempDf=df.loc[:, ["Density", "maphd"]].sort_values("maphd", axis=0, ascending=False)
-    TempDf["Index"]=TempDf.index
-
-    CZ=np.array(calcCZ(s.Dist, TempDf.to_numpy().T))
+    CZ = np.array(calc_CZ(setting.Dist, temp_df.to_numpy().T))
     print(CZ)
-    #CZ=calcCZ(s.Dist, TempDf["Density"].to_numpy(), TempDf["maphd"].to_numpy(), TempDf["Index"].to_numpy())
 
-
-    df["ClusterCenter"]=Clustering(df["nextNode"].to_numpy(),CZ)
-
-    # print(df.sort_values("ClusterCenter",axis=0,ascending=False))
-    # print("CZ: ", str(CZ))
-
+    df["ClusterCenter"] = clustering(df["nextNode"].to_numpy(), CZ)
     return CZ
