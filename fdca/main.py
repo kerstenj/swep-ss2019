@@ -77,7 +77,7 @@ trydc=0.053
 
 
 #for testing returns a list of cluster centers
-dc=calcdc.getbestdc(getZ, trydc)
+dc=calcdc.get_best_dc(getZ, trydc)
 
 print(s.df.sort_values(by="maphd",axis=0,ascending=False))
 
