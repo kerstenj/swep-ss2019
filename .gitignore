@@ -1,7 +1,8 @@
 datasets/kdd-cup/*.data
-environment/env
+env
 **/__pycache__
-.vscode/
+.*/
+*.egg-info/
 fdca/Merken.txt
 testingfdca
 fdca/CSAOld.py
