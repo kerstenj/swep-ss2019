@@ -1,32 +1,39 @@
-import pandas as pd
-import numpy as np
 import random
 
-def euclidean_distance(a, b):
+import pandas as pd
+import numpy as np
+
+
+def euclidean_distance(vec_a, vec_b):
     result = 0
-    for i in range(len(a)):
-        result = result + (a.iloc[i] - b.iloc[i])**2
+    for i in range(len(vec_a)):
+        result = result + (vec_a.iloc[i] - vec_b.iloc[i])**2
 
     return np.sqrt(result)
 
 
-def get_random_centroids(df, k):
+def get_random_centroids(dataframe, count):
     centroids = []
 
-    while len(centroids) < k:
-        idx = random.randint(0, len(df.index)-1)
-        row = df.iloc[idx]
+    while len(centroids) < count:
+        idx = random.randint(0, len(dataframe.index)-1)
+        row = dataframe.iloc[idx]
 
-        if row in centroids: continue
-        else: centroids.append( (idx,row) )
+        if row in centroids:
+            continue
+        else:
+            centroids.append((idx, row))
 
     return centroids
 
 
-def assign_to_centroids(df, centroids):
-    assigned = pd.Series([-1 for _ in range(len(df.index))], index=df.index)
+def assign_to_centroids(dataframe, centroids):
+    assigned = pd.Series(
+        [-1 for _ in range(len(dataframe.index))],
+        index=dataframe.index
+    )
 
-    for index, row in df.iterrows():
+    for index, row in dataframe.iterrows():
         # Calculate nearest center
         min_index = -1
         min_dist = np.inf
@@ -42,38 +49,45 @@ def assign_to_centroids(df, centroids):
     return assigned
 
 
-def columns_equal(a, b):
-    for i in range(len(a)):
-        if a.iloc[i] != b.iloc[i]: return False
+def columns_equal(column_a, column_b):
+    for i in range(len(column_a)):
+        if column_a.iloc[i] != column_b.iloc[i]:
+            return False
     return True
 
 
-def find_new_centroids(df, centroids):
+def find_new_centroids(dataframe, centroids):
     new_centroids = []
 
-    for centroid_index, centroid in centroids:
-        new_centroid = Series([0 for _ in range(len(df.index))], index=df.index)
+    for _, centroid in centroids:
+        new_centroid = pd.Series(
+            [0 for _ in range(len(dataframe.index))],
+            index=dataframe.index
+        )
 
     return new_centroids
 
 
-def execute(df, k):
+def execute(dataframe, count):
     # Algorithm Step-by-Step explanation
     # https://mubaris.com/posts/kmeans-clustering/
 
     # Initial iteration
-    centroids = get_random_centroids(df, k)
-    df['center_index_old'] = pd.Series([-1 for _ in range(len(df.index))], index=df.index)
-    df['center_index'] = assign_to_centroids(df, centroids)
+    centroids = get_random_centroids(dataframe, count)
+    dataframe['center_index_old'] = pd.Series(
+        [-1 for _ in range(len(dataframe.index))],
+        index=dataframe.index
+    )
+    dataframe['center_index'] = assign_to_centroids(dataframe, centroids)
 
     i = 0
-    while not columns_equal(df['center_index'], df['center_index_old']):
-        centroids = find_new_centroids(df, centroids)
-        df['center_index_old'] =  df['center_index']
-        df['center_index'] = assign_to_centroids(df, centroids)
+    while not columns_equal(dataframe['center_index'], dataframe['center_index_old']):
+        centroids = find_new_centroids(dataframe, centroids)
+        dataframe['center_index_old'] = dataframe['center_index']
+        dataframe['center_index'] = assign_to_centroids(dataframe, centroids)
 
         print(f'Iteration #{i}')
         i += 1
 
-    df.drop('center_index_old', axis=1, inplace=True)
-    print(df.to_string())
+    dataframe.drop('center_index_old', axis=1, inplace=True)
+    print(dataframe.to_string())

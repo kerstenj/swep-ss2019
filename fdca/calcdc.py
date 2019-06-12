@@ -1,118 +1,112 @@
-import numpy as np
-import pandas as pd
-import CSA
-import setting as s
-from numba import njit
 import math
 
+import numpy as np
+import pandas as pd
+from numba import njit
+
+import CSA
+import setting
+
+
 @njit
-def dist(node1, node2, ParameterListe, MaxVek, MinVek): #Zwei expliziter Punkte
-    w = sum = j = 0
+def dist(node1, node2, parameters, max_vec, min_vec):  # Zwei expliziter Punkte
+    w = result = j = 0
 
-    #print("Node1:", node1)
-    #print("Node2:", node2)
-
-
-    # Länge aufgrund von neuen Spalten variabel - andere Fehlerabfrage?!
-    # if not(len(node1)==len(node2) and len(node2)==len(max) and len(max)==len(min)):
-    #     return None
-    for i in ParameterListe:
+    for i in parameters:
         if i == 0:
             if not (np.isnan(node1[j]) or np.isnan(node2[j])):
                 w += 1
-                sum += (abs(node1[j] - node2[j]) / (MaxVek[j] - MinVek[j]))**2
-                # sum += abs(node1[j] - node2[j]) / (MaxVek[j] - MinVek[j])
+                result += (abs(node1[j] - node2[j]) / (max_vec[j] - min_vec[j]))**2
 
         else:
             if not (np.isnan(node1[j]) or np.isnan(node2[j])):
-                w+=1
+                w += 1
                 if node1[j] == node2[j]:
-                    sum += 1
-        j+=1
+                    result += 1
+        j += 1
 
-
-    if sum==0:
+    if result == 0:
         return 0
-    # return sum / w
-    return math.sqrt(sum) / w
+
+    return math.sqrt(result) / w
 
 
 @njit
-def getDistances(npArray,ParameterListe, MinVek, MaxVek):
+def get_distances(np_array, parameters, min_vec, max_vec):
+    res = np.zeros((np_array.shape[0], np_array.shape[0]))
 
-    res=np.zeros((npArray.shape[0],npArray.shape[0]))
+    for i in range(np_array.shape[0]):
+        for j in range(i+1, np_array.shape[0]):
+            res[i, j] = dist(
+                np_array[i], np_array[j],
+                parameters,
+                max_vec, min_vec
+            )
 
-    for i in range(npArray.shape[0]):
-        for j in range(i+1, npArray.shape[0]):
-            res[i,j]=dist(npArray[i], npArray[j], ParameterListe, MaxVek, MinVek)
-    #temp=np.vectorize(distance.dist)(s.df)
     return res
-    #return pd.Series(temp)
+
 
 @njit
-def distToCZ(Dist, CZ):
-    distCz=np.zeros(CZ.shape[0])
+def dist_to_CZ(dist, CZ):
+    dist_Cz = np.zeros(CZ.shape[0])
     for i in range(CZ.shape[0]):
-        distCz[i]=Dist[i,CZ[i]]
-    return distCz
+        dist_Cz[i] = dist[i, CZ[i]]
+    return dist_Cz
 
-def getAverageDistance(CZ):
 
-    distCz=distToCZ(s.Dist, CSA.df["ClusterCenter"].to_numpy())
+def get_average_distance(CZ):
 
-    sum=np.nansum(distCz)
-    print ()
-    # for CZ in ClusterZent:
-    #     temp=CSA.df[CSA.df["ClusterCenter"]==CZ]
-    #     print("temp", CZ)
-    #     print(temp[Distances].at[CZ, "Distances"])
+    dist_Cz = dist_to_CZ(setting.Dist, CSA.df["ClusterCenter"].to_numpy())
 
-    # ggf ohne/mit teilen durch len(CZ)
-    return sum/len(CZ)
+    sum = np.nansum(dist_Cz)
+    print()
+    return sum / len(CZ)
 
-def getbestdc(getZ, trydc):
-    #Berechne Distanzen zwischen allen Datenpunkten
-    s.Dist=getDistances(s.df.to_numpy(), s.info.ParameterListe, s.info.MinVek.to_numpy(), s.info.MaxVek.to_numpy())
 
-    #"Dreiecksmatrix" zu "quadratischer Matrix§:
-    s.Dist+=s.Dist.T
+def get_best_dc(get_z, try_dc):
+    # Berechne Distanzen zwischen allen Datenpunkten
+    setting.Dist = get_distances(
+        setting.df.to_numpy(),
+        setting.info.ParameterListe,
+        setting.info.MinVek.to_numpy(),
+        setting.info.MaxVek.to_numpy()
+    )
 
-    N=s.info.ZeilenAnz
-    # pos other values
-    # dclow=N*0.01
-    # dchigh=N*0.2
+    # "Dreiecksmatrix" zu "quadratischer Matrix":
+    setting.Dist += setting.Dist.T
 
-    if getZ:
-        dclow=0.003
-        dchigh=0.2
-        step=(dchigh-dclow)/100
+    N = setting.info.ZeilenAnz
+
+    if get_z:
+        dc_low = 0.003
+        dc_high = 0.2
+        step = (dc_high - dc_low) / 100
 
     else:
-        dclow=dchigh=trydc
-        step=1
+        dc_low = dc_high = try_dc
+        step = 1
 
+    setting.dc = dc_low
 
-    s.dc=dclow
+    z_list = list()
+    dc_list = list()
+    i = 0
 
-    ListZ=list();
-    Listdc=list();
-    i=0
-
-    while s.dc<=dchigh:
-        Listdc.append(s.dc)
+    while setting.dc <= dc_high:
+        dc_list.append(setting.dc)
         print()
         print("-----------------")
         print()
-        print(i,". te Berechnung")
-        i+=1
+        print(i, ". te Berechnung")
+        i += 1
 
-        ClusterZent=CSA.getClusterZentren(s.dc)
-        s.CZ=ClusterZent
-        #print(CSA.df.sort_values("ClusterCenter",axis=0,ascending=False))
-        Z=getAverageDistance(ClusterZent)
+        cluster_center = CSA.get_cluster_centers(setting.dc)
+        setting.CZ = cluster_center
+
+        Z = get_average_distance(cluster_center)
         print("Z: ", Z)
-        ListZ.append(Z)
-        s.dc+=step
+        z_list.append(Z)
+        setting.dc += step
 
-    TestDF=pd.Series(ListZ, index=Listdc)
+    TestDF = pd.Series(z_list, index=dc_list)
     return TestDF

@@ -66,7 +66,7 @@ getZ=False
 # trydc=0.046
 # trydc=0.0392
 
-dc=calcdc.getbestdc(getZ, trydc)
+dc=calcdc.get_best_dc(getZ, trydc)
 
 
 
