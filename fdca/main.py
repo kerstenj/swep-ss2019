@@ -6,6 +6,7 @@ import setting as s
 import matplotlib.pyplot as plt
 import openpyxl
 
+#info Class for global information about the data
 class infoC:
     def __init__(self,df):
         self.ZeilenAnz=len(df.index)
@@ -15,7 +16,7 @@ class infoC:
 
 s.init()
 
-# turning all Strings in categorical data to representative int:
+# turning all strings in categorical data to representative int:
 def transformStringToInt():
     index=0
     for i in s.info.ParameterListe:
@@ -23,6 +24,8 @@ def transformStringToInt():
             s.df.iloc[:,index]=s.df.iloc[:,index].astype('category').cat.codes
         index+=1
     return
+
+#diffrent test data input:
 
 # s.df=reader.readTxtFileK('fdca/test2.txt')
 s.df=reader.readTxtFileW('fdca/Aggregation.txt')
@@ -36,10 +39,13 @@ s.df=reader.readTxtFileW('fdca/Aggregation.txt')
 s.info=infoC(s.df)
 
 
-
+# deleting aditional information in the test data set
 
 # del s.df["class"]
-# del s.df["CZ"]
+del s.df["CZ"]
+
+
+# create a parameter list to map categorical and numerical data
 
 #Parameter List: 0 - num   / 1- cat
 # s.info.ParameterListe=np.array([0,0,0,0,1])
@@ -49,11 +55,15 @@ s.info.ParameterListe=np.array([0,0])
 
 transformStringToInt()
 
-
+# creating min and max vector to normalize numerical data
 s.info.MaxVek=s.df.max()
 s.info.MinVek=s.df.min()
 # s.df.to_excel("hi.xlsx")
+
+#choose to get a table with Z to dc or get a cluster for one dc
+
 getZ=False
+trydc=0.053
 # trydc=0.053 1
 # trydc=0.052 1
 # trydc=0.048 1
@@ -62,31 +72,36 @@ getZ=False
 # trydc=0.078
 # trydc=0.093
 # trydc=0.109
-
 # trydc=0.046
 # trydc=0.0392
 
+
+#for testing returns a list of cluster centers
 dc=calcdc.getbestdc(getZ, trydc)
 
+print(s.df.sort_values(by="maphd",axis=0,ascending=False))
 
-
-#print(s.df["x"],s.df["y"],s.df["Distances"][0],s.df["Density"],s.df["nextNode"])
-# print(s.df["Distances"][0],s.df["Density"],s.df["maphd"],s.df["nextNode"])
-# print("means: ", s.df["Density"].mean(),s.df["maphd"].mean())
-
+# Z to dc table:
 if getZ:
     plt.plot(dc)
     plt.show()
+
+# cluster for trydc value:
 else:
-    # print(s.df.sort_values("Density", axis=0, ascending=False))
-    # print(s.df.sort_values("maphd", axis=0, ascending=False))
 
     fig, ax= plt.subplots()
     temp=s.df["ClusterCenter"]
     temp[s.df["ClusterCenter"]==s.df.index]=1
+
+    # Aggregation:
     ax.scatter(s.df["x"],s.df["y"],c=temp)
     ax.set_xlabel('x')
     ax.set_ylabel('y')
+
+    #Iris subtable:
+    # ax.scatter(s.df["sepal length"],s.df["sepal width"],c=temp)
+    # ax.set_xlabel('sepal length')
+    # ax.set_ylabel('sepal width')
 
     ax.grid(True)
     fig.tight_layout()

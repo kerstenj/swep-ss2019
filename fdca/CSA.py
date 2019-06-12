@@ -47,85 +47,38 @@ def getMaphd(Dist,nextNode):
 
     return maphd
 
-# def calcCZ(Dist, df):
-#     CZ=[]
-#     #size=Dist.shape[0]
-#     averageDens=df[0].mean()
-#
-#     print()
-#     print()
-#     i=0
-#     Test=0
-#     while len(df[1])>0 :
-#         #if maphd = max(maphd) (paper - delta)
-#         print()
-#         print()
-#         print("DP: ", Test)
-#         Test+=1
-#         print(df[0,i],df[1,i],df[2,i])
-#         print("max",df[1].max())
-#         print("average",df[1].mean())
-#         if df[1,i]>=df[1].max():
-#             print("greater max")
-#             CZ.append(int(df[2,i]))
-#             df=np.delete(arr=df,obj=i,axis=1)
-#             #Laufzeitüerprüfung bei größeren Itterationen mit numba:
-#             # df=deleteDP(df,i,size)
-#             # size-=1
-#         # if maphd >= average maphd
-#         elif df[1,i]>=df[1].mean():
-#             print("greater average")
-#             CZ.append(int(df[2,i]))
-#             df=np.delete(arr=df,obj=i,axis=1)
-#             # df=deleteDP(df,i,size)
-#             # size-=1
-#         else:
-#             break
-#     print("break")
-#     print(df)
-#     return CZ
-
 def calcCZ(Dist, df):
     CZ=[]
-    # size=Dist.shape[0]
+
     averageDens=df[0].mean()
 
-    # print()
-    # print()
     i=0
-    # Test=0
     lastDens=[]
     lastIndex=[]
     while len(df[1])>0 :
-        #if maphd = max(maphd) (paper - delta)
-        # print()
-        # print()
-        # print("DP: ", Test)
-        # Test+=1
-        # print(df[0,i],df[1,i],df[2,i])
-        # print("max",df[0].max())
-        # print("average",df[0].mean())
 
-
+        # if a point with the same Distance is found
         if df[0,i] in lastDens:
-            # print()
-            # print("Übersprungen: ", df[2,i])
             nextNodeIndex=lastDens.index(df[0,i])
-            # print(s.df.at[int(df[2,i]),"nextNode"])
-            s.df.at[int(df[2,i]),"nextNode"]=lastIndex[nextNodeIndex]
-            # print(s.df.at[int(df[2,i]),"nextNode"])
-            df=np.delete(arr=df,obj=i,axis=1)
 
-            continue
+            print("HIER:")
+            print(df[2,i])
+            print(lastIndex[nextNodeIndex])
+            print(s.Dist[int(df[2,i]),lastIndex[nextNodeIndex]])
+
+
+            if s.Dist[int(df[2,i]),lastIndex[nextNodeIndex]] <= s.dc:
+                s.df.at[int(df[2,i]),"nextNode"]=lastIndex[nextNodeIndex]
+                df=np.delete(arr=df,obj=i,axis=1)
+                continue
+
+        # if maphd >= maximum maphd
         if df[0,i]>=df[0].max():
-            # print("greater max")
             CZ.append(int(df[2,i]))
             lastDens.append(df[0,i])
             lastIndex.append(df[2,i])
             df=np.delete(arr=df,obj=i,axis=1)
-            #Laufzeitüerprüfung bei größeren Itterationen mit numba:
-            # df=deleteDP(df,i,size)
-            # size-=1
+
         # if maphd >= average maphd
         elif df[0,i]>=df[0].mean():
             # print("greater average")
@@ -133,36 +86,12 @@ def calcCZ(Dist, df):
             lastDens.append(df[0,i])
             lastIndex.append(df[2,i])
             df=np.delete(arr=df,obj=i,axis=1)
-            # df=deleteDP(df,i,size)
-            # size-=1
+
         else:
             break
     print("break")
     print(df)
     return CZ
-
-# def calcCZ(Dist, df):
-#     CZ=[]
-#     #size=Dist.shape[0]
-#     averageDist=df[1].mean()
-#     maxDist=df[1].max()
-#
-#     i=0
-#     Test=0
-#     while len(df[1])>0 :
-#         if df[1,i]>=df[1].max():
-#             CZ.append(int(df[2,i]))
-#             df=np.delete(arr=df,obj=i,axis=1)
-#
-#         elif df[1,i]>=averageDist:
-#
-#             CZ.append(int(df[2,i]))
-#             df=np.delete(arr=df,obj=i,axis=1)
-#
-#         else:
-#             break
-#
-#     return CZ
 
 
 @njit
@@ -187,7 +116,7 @@ def Clustering(nextNode, CZ):
 
     return res
 
-def getClusterZentren(dcP):
+def getClusterCenters(dcP):
     global dc
     global df
     global CZ

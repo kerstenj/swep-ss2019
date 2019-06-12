@@ -20,8 +20,9 @@ def dist(node1, node2, ParameterListe, MaxVek, MinVek): #Zwei expliziter Punkte
         if i == 0:
             if not (np.isnan(node1[j]) or np.isnan(node2[j])):
                 w += 1
-                sum += (abs(node1[j] - node2[j]) / (MaxVek[j] - MinVek[j]))**2
-                # sum += abs(node1[j] - node2[j]) / (MaxVek[j] - MinVek[j])
+                # euclid norm:
+                # sum += (abs(node1[j] - node2[j]) / (MaxVek[j] - MinVek[j]))**2
+                sum += abs(node1[j] - node2[j]) / (MaxVek[j] - MinVek[j])
 
         else:
             if not (np.isnan(node1[j]) or np.isnan(node2[j])):
@@ -33,8 +34,10 @@ def dist(node1, node2, ParameterListe, MaxVek, MinVek): #Zwei expliziter Punkte
 
     if sum==0:
         return 0
-    # return sum / w
-    return math.sqrt(sum) / w
+    # euclid norm:
+    # return math.sqrt(sum) / w
+    return sum / w
+
 
 
 @njit
@@ -50,10 +53,11 @@ def getDistances(npArray,ParameterListe, MinVek, MaxVek):
     #return pd.Series(temp)
 
 @njit
-def distToCZ(Dist, CZ):
-    distCz=np.zeros(CZ.shape[0])
-    for i in range(CZ.shape[0]):
-        distCz[i]=Dist[i,CZ[i]]
+def distToCZ(Dist, ClusterMappingVec):
+    #ClusterMappingVec - vector with the mapping of all datapoints to their cluster centers
+    distCz=np.zeros(ClusterMappingVec.shape[0])
+    for i in range(ClusterMappingVec.shape[0]):
+        distCz[i]=Dist[i,ClusterMappingVec[i]]
     return distCz
 
 def getAverageDistance(CZ):
@@ -61,20 +65,15 @@ def getAverageDistance(CZ):
     distCz=distToCZ(s.Dist, CSA.df["ClusterCenter"].to_numpy())
 
     sum=np.nansum(distCz)
-    print ()
-    # for CZ in ClusterZent:
-    #     temp=CSA.df[CSA.df["ClusterCenter"]==CZ]
-    #     print("temp", CZ)
-    #     print(temp[Distances].at[CZ, "Distances"])
 
-    # ggf ohne/mit teilen durch len(CZ)
+    # maybe without /len(CZ)
     return sum/len(CZ)
 
 def getbestdc(getZ, trydc):
-    #Berechne Distanzen zwischen allen Datenpunkten
+    #calculate distances between all datapoints
     s.Dist=getDistances(s.df.to_numpy(), s.info.ParameterListe, s.info.MinVek.to_numpy(), s.info.MaxVek.to_numpy())
 
-    #"Dreiecksmatrix" zu "quadratischer Matrix§:
+    #berechnete "Dreiecksmatrix" zu "quadratischer Matrix" für bessere Adressierung:
     s.Dist+=s.Dist.T
 
     N=s.info.ZeilenAnz
@@ -82,8 +81,9 @@ def getbestdc(getZ, trydc):
     # dclow=N*0.01
     # dchigh=N*0.2
 
+    #calculate step diffrent Z
     if getZ:
-        dclow=0.003
+        dclow=0
         dchigh=0.2
         step=(dchigh-dclow)/100
 
@@ -91,7 +91,7 @@ def getbestdc(getZ, trydc):
         dclow=dchigh=trydc
         step=1
 
-
+    
     s.dc=dclow
 
     ListZ=list();
@@ -106,12 +106,13 @@ def getbestdc(getZ, trydc):
         print(i,". te Berechnung")
         i+=1
 
-        ClusterZent=CSA.getClusterZentren(s.dc)
+        ClusterZent=CSA.getClusterCenters(s.dc)
         s.CZ=ClusterZent
-        #print(CSA.df.sort_values("ClusterCenter",axis=0,ascending=False))
+
         Z=getAverageDistance(ClusterZent)
         print("Z: ", Z)
-        ListZ.append(Z)
+        # ListZ.append(Z)
+        ListZ.append(len(ClusterZent))
         s.dc+=step
 
     TestDF=pd.Series(ListZ, index=Listdc)
