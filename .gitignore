@@ -2,4 +2,7 @@ datasets/kdd-cup/*.data
 environment/env
 **/__pycache__
 .vscode/
-fdca/
+fdca/Merken.txt
+testingfdca
+fdca/CSAOld.py
+fdca/calcdcOld.py
