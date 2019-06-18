@@ -4,3 +4,4 @@ pandas
 numba
 prettytable
 pluginbase
+openpyxl
