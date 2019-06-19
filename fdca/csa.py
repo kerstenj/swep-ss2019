@@ -4,7 +4,6 @@ import pandas as pd
 import numpy as np
 from numba import njit
 
-
 @njit
 def get_density(distances, dc):
     dist_cz = np.zeros(distances.shape[0])
@@ -19,19 +18,24 @@ def get_density(distances, dc):
 
 
 @njit
-def get_maphd_index(distances, density):
+def get_maphd_index(distances, density, dc):
     next_node = np.full(distances.shape[0], -1)
 
     for i in range(distances.shape[0]):
         for j in range(distances.shape[0]):
-            # Distances where this density < other density
-            # or <= - without itself
+            # Distances where this density < other density or <= - without itself
+            # if i<=398 and i>=396 and j<=398 and j>=396:
             if density[i] < density[j]:
                 if next_node[i] == -1:
                     next_node[i] = j
-                elif distances[i, next_node[i]] > distances[i, j]:
+                else:
+                    if distances[i, next_node[i]] > distances[i, j]:
+                        next_node[i] = j
+            elif density[i] == density[j] and i<j:
+                if next_node[i] == -1:
                     next_node[i] = j
-
+                elif distances[i, next_node[i]] > distances[i, j] and distances[i, j]<=dc:
+                    next_node[i] = j
     return next_node
 
 
@@ -70,42 +74,20 @@ def clustering(next_nodes, cz):
     return result
 
 
-def calc_cz(distances, df):
-    cz = []
-    average_dens = df[0].mean()
-
+def calc_CZ(dist, df):
+    CZ = []
     i = 0
-    last_density = []
-    last_index = []
     while len(df[1]) > 0:
-
-        if df[0, i] in last_density:
-            next_node_index = last_density.index(df[0, i])
-            df.at[
-                int(df[2, i]),
-                'nextNode'
-            ] = last_index[next_node_index]
-            df = np.delete(arr=df, obj=i, axis=1)
-            continue
-
         if df[0, i] >= df[0].max():
-            cz.append(int(df[2, i]))
-            last_density.append(df[0, i])
-            last_index.append(df[2, i])
+            CZ.append(int(df[2, i]))
             df = np.delete(arr=df, obj=i, axis=1)
-
         elif df[0, i] >= df[0].mean():
-            cz.append(int(df[2, i]))
-            last_density.append(df[0, i])
-            last_index.append(df[2, i])
+            CZ.append(int(df[2, i]))
             df = np.delete(arr=df, obj=i, axis=1)
 
         else:
             break
-
-    log.info(msg='break')
-    log.info(msg=df.to_string())
-    return cz
+    return CZ
 
 
 def get_cluster_centers(store):
