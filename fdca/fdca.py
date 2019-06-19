@@ -22,7 +22,7 @@ def transform_str_to_int(df, parameters):
 
 
 if __name__ == "__main__":
-    store = Storage(reader.read_txt_whitespace('Aggregation.txt'))
+    store = Storage(reader.read_txt_whitespace('fdca/Aggregation.txt'))
     del store.df["cz"]
     store.meta.parameters = np.array([0, 0])
 
