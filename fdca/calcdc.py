@@ -65,11 +65,11 @@ def dist_to_cz(distances, cz):
     return dist_cz
 
 
-def get_average_distance(distances, cz):
-    dist_cz = dist_to_cz(distances, csa.df["cluster_center"].to_numpy())
+def get_average_distance(distances, store):
+    dist_cz = dist_to_cz(distances, store.df["cluster_center"].to_numpy())
 
     sum = np.nansum(dist_cz)
-    return sum / len(cz)
+    return sum / len(store.cz)
 
 
 def get_best_dc(store, get_z, try_dc):
@@ -106,7 +106,7 @@ def get_best_dc(store, get_z, try_dc):
         cluster_center = csa.get_cluster_centers(store)
         store.cz = cluster_center
 
-        z = get_average_distance(store.distances, cluster_center)
+        z = get_average_distance(store.distances, store)
         log.info(msg=f'Z: {z}')
         z_list.append(z)
         store.dc += step

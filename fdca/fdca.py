@@ -28,7 +28,7 @@ if __name__ == "__main__":
 
     transform_str_to_int(store.df, store.meta.parameters)
 
-    get_z = False
+    get_z = True
     try_dc = 0.053
 
     dc = calcdc.get_best_dc(store, get_z, try_dc)
@@ -44,11 +44,11 @@ if __name__ == "__main__":
     # cluster for try_dc value:
     else:
         fig, ax = plt.subplots()
-        temp = s.df["cluster_center"]
-        temp[s.df["cluster_center"] == s.df.index] = 1
+        temp = store.df["cluster_center"]
+        temp[store.df["cluster_center"] == store.df.index] = 1
 
         # Aggregation:
-        ax.scatter(s.df["x"], s.df["y"], c=temp)
+        ax.scatter(store.df["x"], store.df["y"], c=temp)
         ax.set_xlabel('x')
         ax.set_ylabel('y')
 

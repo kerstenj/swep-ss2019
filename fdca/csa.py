@@ -67,23 +67,34 @@ def clustering(next_nodes, cz):
             while result[k] == -1:
                 temp.append(k)
                 k = next_nodes[k]
-            cz = result[k]
+            cz_element = result[k]
             while len(temp) != 0:
-                result[temp.pop()] = cz
+                result[temp.pop()] = cz_element
 
     return result
 
 
-def calc_CZ(dist, df):
+def calc_cz(df):
     CZ = []
     i = 0
+    # while len(df[1]) > 0:
+    #     if df[0, i] >= df[0].max():
+    #         CZ.append(int(df[2, i]))
+    #         df = np.delete(arr=df, obj=i, axis=1)
+    #     elif df[0, i] >= df[0].mean():
+    #         CZ.append(int(df[2, i]))
+    #         df = np.delete(arr=df, obj=i, axis=1)
+    #
+    #     else:
+    #         break
+    # return CZ
     while len(df[1]) > 0:
-        if df[0, i] >= df[0].max():
-            CZ.append(int(df[2, i]))
-            df = np.delete(arr=df, obj=i, axis=1)
-        elif df[0, i] >= df[0].mean():
-            CZ.append(int(df[2, i]))
-            df = np.delete(arr=df, obj=i, axis=1)
+        if df[0, 0] >= df[0].max():
+            CZ.append(int(df[2, 0]))
+            df = np.delete(arr=df, obj=0, axis=1)
+        elif df[0, 0] >= df[0].mean():
+            CZ.append(int(df[2, 0]))
+            df = np.delete(arr=df, obj=0, axis=1)
 
         else:
             break
@@ -100,7 +111,8 @@ def get_cluster_centers(store):
     # maphd - Minimaler Abstand zu einem Punkt höherer Dichte (Delta im Paper)
     store.df['next_node'] = get_maphd_index(
         store.distances,
-        store.df['density'].to_numpy()
+        store.df['density'].to_numpy(),
+        store.dc
     )
 
     store.df['maphd'] = get_maphd(
@@ -114,8 +126,7 @@ def get_cluster_centers(store):
     temp_df['index'] = temp_df.index
 
     store.cz = np.array(calc_cz(
-        store.distances,
-        temp_df.T
+        temp_df.to_numpy().T
     ))
     print(store.cz)
 
