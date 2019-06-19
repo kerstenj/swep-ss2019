@@ -68,7 +68,7 @@ def dist_to_cz(distances, cz):
 def get_average_distance(distances, store):
     result=[]
     for i in store.cz:
-        temp_cluster_array=store.df["ClusterCenter"][store.df["ClusterCenter"]==i]
+        temp_cluster_array=store.df["cluster_center"][store.df["cluster_center"]==i]
         dist_cz = dist_to_cz(distances, store.df["cluster_center"].to_numpy())
         count_nodes=len(dist_Cz)
         sum = np.nansum(dist_Cz)/count_nodes
