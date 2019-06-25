@@ -21,21 +21,23 @@ def transform_str_to_int(df, parameters):
     return
 
 
-if __name__ == "__main__":
+def execute(df, parameter_list, get_z=False, try_dc, z_func=0)
     store = Storage(reader.read_txt_whitespace('fdca/Aggregation.txt'))
-    del store.df["cz"]
+    # del store.df["cz"]
     store.meta.parameters = np.array([0, 0])
 
     transform_str_to_int(store.df, store.meta.parameters)
-
+    get_z = False
     get_z = True
-    try_dc = 0.053
-
+    try_dc = 0.0471
+    # 0.04717800000000002
+    # print(store.df)
     dc = calcdc.get_best_dc(store, get_z, try_dc)
 
     # for testing returns a list of cluster centers
     log.info(msg=store.df.sort_values(by="maphd", axis=0, ascending=False).to_string())
 
+    #print(store.df.sort_values(by="density", axis=0, ascending=False)[store.df["cluster_center"]==store.df.index]["density"])
     # z to dc plot:
     if get_z:
         plt.plot(dc)
@@ -62,6 +64,7 @@ if __name__ == "__main__":
         plt.show()
 
 """
+df, cz = call()
 store = Storage(reader.read_txt_whitespace('Aggregation.txt'))
 
 diffrent test data input:

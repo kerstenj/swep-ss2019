@@ -1,6 +1,5 @@
 import math
 import logging as log
-
 import numpy as np
 import pandas as pd
 from numba import njit
@@ -44,7 +43,7 @@ def dist(vec_a, vec_b, parameters, max_vec, min_vec, euclid_norm=True):
 @njit
 def get_distances(np_array, parameters, min_vec, max_vec):
     res = np.zeros((np_array.shape[0], np_array.shape[0]))
-
+    print(np_array)
     for i in range(np_array.shape[0]):
         for j in range(i+1, np_array.shape[0]):
             res[i, j] = dist(
@@ -71,15 +70,25 @@ def get_average_distance(distances, store):
         temp_cluster_array=store.df["cluster_center"][store.df["cluster_center"]==i]
         dist_cz = dist_to_cz(distances, store.df["cluster_center"].to_numpy())
         count_nodes=len(dist_cz)
-        sum = np.nansum(dist_cz)/count_nodes
-        # sum= statistics.median(dist_Cz)
+        # dist_cz=dist_cz*dist_cz.T
+        sum=dist_cz
+        # average_anz_dp_in_cluster=count_nodes/store.meta.row_count
+        # verhältis zu...
+        # max distance von Cluster-center punkt zu cluster center
+        # sum = np.max(dist_cz)/count_nodes
+        # sum = statistics.median(dist_Cz)
+        # ursprüngliche dichte aufsummieren pro cluster und durch die anzahl teilen
+        sum=np.nansum(store.df["density"][store.df["cluster_center"]==i])/count_nodes
+        #result.append(sum)
         result.append(sum)
 
     dist_cz_all = dist_to_cz(distances, store.df["cluster_center"].to_numpy())
     # sum_all = np.nansum(dist_cz)
-
-
-    return np.nansum(result)/len(store.cz)
+    temp=np.nansum(result)/len(store.cz)/store.meta.row_count
+    #if(temp<2/store.meta.row_count):
+    #    return 0
+    print(store.dc)
+    return np.nansum(result)/len(store.cz)/store.meta.row_count
     # return statistics.median(result)*statistics.median(dist_cz_all)
 
 
@@ -93,11 +102,10 @@ def get_best_dc(store, get_z, try_dc):
         store.meta.min_vec.to_numpy(),
         store.meta.max_vec.to_numpy()
     )
-
     # Xalculate step different z
     if get_z:
         dc_low = 0.003
-        dc_high = 0.2
+        dc_high = 0.06
         step = (dc_high - dc_low) / 100
 
     else:
