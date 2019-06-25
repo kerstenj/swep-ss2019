@@ -91,10 +91,7 @@ def get_average_distance(distances, store):
     return np.nansum(result)/len(store.cz)/store.row_count
     # return statistics.median(result)*statistics.median(dist_cz_all)
 
-
-
-
-def get_best_dc(store, get_z, try_dc):
+def get_best_dc(store,dc_low,dc_high):
     # Calculate distances between all dates
     store.distances = get_distances(
         store.df.to_numpy(),
@@ -102,15 +99,11 @@ def get_best_dc(store, get_z, try_dc):
         store.min_vec.to_numpy(),
         store.max_vec.to_numpy()
     )
-    # Xalculate step different z
-    if get_z:
-        dc_low = 0.003
-        dc_high = 0.06
-        step = (dc_high - dc_low) / 100
+    # Calculate step different z
 
-    else:
-        dc_low = dc_high = try_dc
-        step = 1
+    dc_low = 0
+    dc_high = 0.06
+    step = (dc_high - dc_low) / 100
 
     store.dc = dc_low
 
@@ -134,3 +127,17 @@ def get_best_dc(store, get_z, try_dc):
 
     test_series = pd.Series(z_list, index=dc_list)
     return test_series
+
+def calculate_cluster(store, try_dc):
+    # Calculate distances between all dates
+    store.distances = get_distances(
+        store.df.to_numpy(),
+        store.parameters,
+        store.min_vec.to_numpy(),
+        store.max_vec.to_numpy()
+    )
+    # Calculate step different z
+    store.dc = try_dc
+
+    cluster_center = csa.get_cluster_centers(store)
+    store.cz = cluster_center

@@ -21,42 +21,30 @@ def transform_str_to_int(df, parameters):
     return
 
 
-def execute(df, parameter_list, try_dc, get_z=False, z_func=0):
+def execute(df, parameter_list, try_dc):
     store = Storage(df, parameter_list)
 
     transform_str_to_int(store.df, store.parameters)
-    dc = calcdc.get_best_dc(store, get_z, try_dc)
+
+    calcdc.calculate_cluster(store, try_dc)
 
     # for testing returns a list of cluster centers
     log.info(msg=store.df.sort_values(by="maphd", axis=0, ascending=False).to_string())
 
     #print(store.df.sort_values(by="density", axis=0, ascending=False)[store.df["cluster_center"]==store.df.index]["density"])
     # z to dc plot:
-    if get_z:
-        plt.plot(dc)
-        plt.show()
+    return (store.df["cluster_center"],store.cz)
 
-    # cluster for try_dc value:
-    else:
-        fig, ax = plt.subplots()
-        temp = store.df["cluster_center"]
-        temp[store.df["cluster_center"] == store.df.index] = 1
+def calculate_z(df, parameter_list, dc_low=0, dc_high=0.2):
+    store = Storage(df, parameter_list)
 
-        # Aggregation:
-        ax.scatter(store.df["x"], store.df["y"], c=temp)
-        ax.set_xlabel('x')
-        ax.set_ylabel('y')
+    transform_str_to_int(store.df, store.parameters)
+    return calcdc.get_best_dc(store, dc_low, dc_high)
 
-        # Iris subtable:
-        # ax.scatter(s.df["sepal length"],s.df["sepal width"],c=temp)
-        # ax.set_xlabel('sepal length')
-        # ax.set_ylabel('sepal width')
 
-        ax.grid(True)
-        fig.tight_layout()
-        plt.show()
 
-execute(reader.read_txt_whitespace('fdca/Aggregation.txt'), [0, 0],  0.0471, True,0)
+execute(reader.read_txt_whitespace('fdca/Aggregation.txt'), [0, 0],  0.0471)
+calculate_z(reader.read_txt_whitespace('fdca/Aggregation.txt'), [0, 0])
 
 """
 df, cz = call()
