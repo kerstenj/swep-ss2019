@@ -3,7 +3,7 @@ import logging as log
 import pandas as pd
 import reader
 import calcdc
-from storage import Storage, Meta
+from storage import Storage
 import matplotlib.pyplot as plt
 import openpyxl
 
@@ -21,17 +21,10 @@ def transform_str_to_int(df, parameters):
     return
 
 
-def execute(df, parameter_list, get_z=False, try_dc, z_func=0)
-    store = Storage(reader.read_txt_whitespace('fdca/Aggregation.txt'))
-    # del store.df["cz"]
-    store.meta.parameters = np.array([0, 0])
+def execute(df, parameter_list, try_dc, get_z=False, z_func=0):
+    store = Storage(df, parameter_list)
 
-    transform_str_to_int(store.df, store.meta.parameters)
-    get_z = False
-    get_z = True
-    try_dc = 0.0471
-    # 0.04717800000000002
-    # print(store.df)
+    transform_str_to_int(store.df, store.parameters)
     dc = calcdc.get_best_dc(store, get_z, try_dc)
 
     # for testing returns a list of cluster centers
@@ -63,6 +56,8 @@ def execute(df, parameter_list, get_z=False, try_dc, z_func=0)
         fig.tight_layout()
         plt.show()
 
+execute(reader.read_txt_whitespace('fdca/Aggregation.txt'), [0, 0],  0.0471, True,0)
+
 """
 df, cz = call()
 store = Storage(reader.read_txt_whitespace('Aggregation.txt'))
@@ -88,7 +83,7 @@ create a parameter list to map categorical and numerical data
 Parameter List: 0 - num   / 1- cat
 s.info.ParameterListe=np.array([0,0,0,0,1])
 s.info.ParameterListe=np.array([0,0,0,0])
-store.meta.parameters = np.array([0, 0])
+store.parameters = np.array([0, 0])
 print(info.ZeilenAnz, info.SpaltenAnz, info.MinVek, info.MaxVek)
 
 creating min and max vector to normalize numerical data

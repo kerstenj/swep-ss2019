@@ -72,7 +72,7 @@ def get_average_distance(distances, store):
         count_nodes=len(dist_cz)
         # dist_cz=dist_cz*dist_cz.T
         sum=dist_cz
-        # average_anz_dp_in_cluster=count_nodes/store.meta.row_count
+        # average_anz_dp_in_cluster=count_nodes/store.row_count
         # verhältis zu...
         # max distance von Cluster-center punkt zu cluster center
         # sum = np.max(dist_cz)/count_nodes
@@ -84,11 +84,11 @@ def get_average_distance(distances, store):
 
     dist_cz_all = dist_to_cz(distances, store.df["cluster_center"].to_numpy())
     # sum_all = np.nansum(dist_cz)
-    temp=np.nansum(result)/len(store.cz)/store.meta.row_count
-    #if(temp<2/store.meta.row_count):
+    temp=np.nansum(result)/len(store.cz)/store.row_count
+    #if(temp<2/store.row_count):
     #    return 0
     print(store.dc)
-    return np.nansum(result)/len(store.cz)/store.meta.row_count
+    return np.nansum(result)/len(store.cz)/store.row_count
     # return statistics.median(result)*statistics.median(dist_cz_all)
 
 
@@ -98,9 +98,9 @@ def get_best_dc(store, get_z, try_dc):
     # Calculate distances between all dates
     store.distances = get_distances(
         store.df.to_numpy(),
-        store.meta.parameters,
-        store.meta.min_vec.to_numpy(),
-        store.meta.max_vec.to_numpy()
+        store.parameters,
+        store.min_vec.to_numpy(),
+        store.max_vec.to_numpy()
     )
     # Xalculate step different z
     if get_z:
