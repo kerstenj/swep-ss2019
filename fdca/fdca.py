@@ -43,8 +43,8 @@ def calculate_z(df, parameter_list, dc_low=0, dc_high=0.2):
 
 
 
-execute(reader.read_txt_whitespace('fdca/Aggregation.txt'), [0, 0],  0.0471)
-calculate_z(reader.read_txt_whitespace('fdca/Aggregation.txt'), [0, 0])
+execute(reader.read_txt_whitespace('Aggregation.txt'), [0, 0],  0.0471)
+#calculate_z(reader.read_txt_whitespace('fdca/Aggregation.txt'), [0, 0])
 
 """
 df, cz = call()
