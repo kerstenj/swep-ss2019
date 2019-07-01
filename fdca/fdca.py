@@ -34,7 +34,7 @@ def execute(df, parameter_list, try_dc):
     # for testing returns a list of cluster centers
     log.info(msg=store.df.sort_values(by="maphd", axis=0, ascending=False).to_string())
 
-    visualisation.plot(store)
+    visualisation.plot_3D(store, "sepal length", "sepal width", "class")
 
     #print(store.df.sort_values(by="density", axis=0, ascending=False)[store.df["cluster_center"]==store.df.index]["density"])
     # z to dc plot:
