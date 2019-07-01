@@ -23,9 +23,11 @@ def transform_str_to_int(df, parameters):
 
 
 def execute(df, parameter_list, try_dc):
-    store = Storage(df, parameter_list)
+    # del df["class"]
 
-    transform_str_to_int(store.df, store.parameters)
+    transform_str_to_int(df, parameter_list)
+
+    store = Storage(df, parameter_list)
 
     calcdc.calculate_cluster(store, try_dc)
 
@@ -39,14 +41,15 @@ def execute(df, parameter_list, try_dc):
     return (store.df["cluster_center"],store.cz)
 
 def calculate_z(df, parameter_list, dc_low=0, dc_high=0.2):
+    transform_str_to_int(df, parameter_list)
+
     store = Storage(df, parameter_list)
 
-    transform_str_to_int(store.df, store.parameters)
     return calcdc.get_best_dc(store, dc_low, dc_high)
 
 
 
-execute(reader.read_txt_whitespace('Aggregation.txt'), [0, 0],  0.0471)
+execute(reader.read_txt_comma('iris.data'), [0, 0, 0, 0, 1],  0.138)
 #calculate_z(reader.read_txt_whitespace('fdca/Aggregation.txt'), [0, 0])
 
 """
