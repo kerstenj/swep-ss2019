@@ -18,13 +18,15 @@ def transform_str_to_int(df, parameters):
         if i == 1:
             df.iloc[:, index] = df.iloc[:, index].astype('category').cat.codes
         index += 1
-    return
+    return df
 
 
 def execute(df, parameter_list, try_dc):
-    store = Storage(df, parameter_list)
 
-    transform_str_to_int(store.df, store.parameters)
+    # del df["class"]
+
+    df=transform_str_to_int(df, parameter_list)
+    store = Storage(df, parameter_list)
 
     calcdc.calculate_cluster(store, try_dc)
 
@@ -32,19 +34,57 @@ def execute(df, parameter_list, try_dc):
     log.info(msg=store.df.sort_values(by="maphd", axis=0, ascending=False).to_string())
 
     #print(store.df.sort_values(by="density", axis=0, ascending=False)[store.df["cluster_center"]==store.df.index]["density"])
-    # z to dc plot:
-    return (store.df["cluster_center"],store.cz)
 
-def calculate_z(df, parameter_list, dc_low=0, dc_high=0.2):
+    # z to dc plot:
+    return (store.df,store.cz)
+
+def calculate_z(df, parameter_list, dc_low=0, dc_high=0.05):
+
+    # del df["class"]
+
+    df=transform_str_to_int(df, parameter_list)
     store = Storage(df, parameter_list)
 
-    transform_str_to_int(store.df, store.parameters)
     return calcdc.get_best_dc(store, dc_low, dc_high)
 
+hi=False
+# hi=True
 
+if hi:
 
-execute(reader.read_txt_whitespace('fdca/Aggregation.txt'), [0, 0],  0.0471)
-calculate_z(reader.read_txt_whitespace('fdca/Aggregation.txt'), [0, 0])
+    plt.plot(calculate_z(reader.read_txt_whitespace('fdca/jain.txt'), [0, 0]))
+    # plt.plot(calculate_z(reader.read_txt_whitespace('fdca/flame.txt'), [0, 0]))
+    # plt.plot(calculate_z(reader.read_txt_whitespace('fdca/Aggregation.txt'), [0, 0]))
+    # plt.plot(calculate_z(reader.read_txt_comma('datasets/Iris/iris.data'), [0, 0, 0, 0 ,1]))
+    plt.show()
+
+else:
+
+    # df,cz=execute(reader.read_txt_whitespace('fdca/Aggregation.txt'), [0, 0],  0.0471)
+    # df,cz=execute(reader.read_txt_whitespace('fdca/flame.txt'), [0, 0],  0.06758)
+    df,cz=execute(reader.read_txt_whitespace('fdca/jain.txt'), [0, 0],  0.02835)
+    #0.021
+    #
+    # cluster for try_dc value:
+    fig, ax = plt.subplots()
+    temp = df["cluster_center"].copy()
+    temp[df["cluster_center"] == df.index] = 1
+    #
+    # # Aggregation:
+    ax.scatter(df["x"], df["y"], c=temp)
+    ax.set_xlabel('x')
+    ax.set_ylabel('y')
+    #
+    # # Iris subtable:
+    # ax.scatter(s.df["sepal length"],s.df["sepal width"],c=temp)
+    # ax.set_xlabel('sepal length')
+    # ax.set_ylabel('sepal width')
+    #
+    #
+    ax.grid(True)
+    fig.tight_layout()
+    plt.show()
+
 
 """
 df, cz = call()

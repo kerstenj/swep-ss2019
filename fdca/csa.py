@@ -128,7 +128,7 @@ def get_cluster_centers(store):
     store.cz = np.array(calc_cz(
         temp_df.to_numpy().T
     ))
-    print(store.cz)
+    # print(store.cz)
 
     store.df['cluster_center'] = clustering(
         store.df['next_node'].to_numpy(),
