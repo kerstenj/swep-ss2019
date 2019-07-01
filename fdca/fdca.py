@@ -22,9 +22,10 @@ def transform_str_to_int(df, parameters):
 
 
 def execute(df, parameter_list, try_dc):
-    store = Storage(df, parameter_list)
 
-    transform_str_to_int(store.df, store.parameters)
+    transform_str_to_int(df, parameters_list)
+
+    store = Storage(df, parameter_list)
 
     calcdc.calculate_cluster(store, try_dc)
 
@@ -35,10 +36,12 @@ def execute(df, parameter_list, try_dc):
     # z to dc plot:
     return (store.df["cluster_center"],store.cz)
 
-def calculate_z(df, parameter_list, dc_low=0, dc_high=0.2):
+def calculate_z(df, parameter_list, dc_low=0, dc_high=0.2, step_count=200):
+
+    transform_str_to_int(df, parameters_list)
+
     store = Storage(df, parameter_list)
 
-    transform_str_to_int(store.df, store.parameters)
     return calcdc.get_best_dc(store, dc_low, dc_high)
 
 
