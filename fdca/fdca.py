@@ -3,6 +3,7 @@ import logging as log
 import pandas as pd
 import reader
 import calcdc
+import visualisation
 from storage import Storage
 import matplotlib.pyplot as plt
 import openpyxl
@@ -30,6 +31,8 @@ def execute(df, parameter_list, try_dc):
 
     # for testing returns a list of cluster centers
     log.info(msg=store.df.sort_values(by="maphd", axis=0, ascending=False).to_string())
+
+    visualisation.plot(store)
 
     #print(store.df.sort_values(by="density", axis=0, ascending=False)[store.df["cluster_center"]==store.df.index]["density"])
     # z to dc plot:
