@@ -6,7 +6,7 @@ import calcdc
 import visualisation
 from storage import Storage
 import matplotlib.pyplot as plt
-import openpyxl
+# import openpyxl
 
 
 def transform_str_to_int(df, parameters):
@@ -34,7 +34,8 @@ def execute(df, parameter_list, try_dc):
     # for testing returns a list of cluster centers
     log.info(msg=store.df.sort_values(by="maphd", axis=0, ascending=False).to_string())
 
-    visualisation.plot_3D(store, "sepal length", "sepal width", "class")
+    # visualisation.plot_2D(store)
+    visualisation.plot_2D_circles(store, "sepal length", "sepal width", "petal length")
 
     #print(store.df.sort_values(by="density", axis=0, ascending=False)[store.df["cluster_center"]==store.df.index]["density"])
     # z to dc plot:
@@ -49,7 +50,8 @@ def calculate_z(df, parameter_list, dc_low=0, dc_high=0.2):
 
 
 
-execute(reader.read_txt_comma('iris.data'), [0, 0, 0, 0, 1],  0.138)
+# execute(reader.read_txt_whitespace('Aggregation.txt'), [0, 0],  0.0473)
+execute(reader.read_txt_comma('iris.data'), [0, 0, 0, 0, 1],  0.185)
 #calculate_z(reader.read_txt_whitespace('fdca/Aggregation.txt'), [0, 0])
 
 """
