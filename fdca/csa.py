@@ -102,7 +102,7 @@ def calc_cz(df):
 
 
 def get_cluster_centers(store):
-    log.info(f'Test dc: {store.dc}')
+    log.info('Test dc: {store.dc}')
     log.info('...')
 
     # Berechne die Dichte der Datenpunkte abhängig von der Grenzdistanz dc

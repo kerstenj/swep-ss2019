@@ -135,7 +135,7 @@ def get_best_dc(store,dc_low,dc_high):
     while store.dc <= dc_high:
         dc_list.append(store.dc)
         log.info(msg='-----------------')
-        log.info(msg=f'{i}te Berechnung')
+        log.info(msg='{i}te Berechnung')
         i += 1
 
         cluster_center = csa.get_cluster_centers(store)
@@ -163,8 +163,7 @@ def get_best_dc(store,dc_low,dc_high):
         # print()
         # print(" z-last z: ", z-last_z)
         # print("row count: ", 1/store.row_count)
-
-
+        
         z_list.append(z)
         store.dc += step
 

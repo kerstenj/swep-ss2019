@@ -3,9 +3,10 @@ import logging as log
 import pandas as pd
 import reader
 import calcdc
+import visualisation
 from storage import Storage
 import matplotlib.pyplot as plt
-import openpyxl
+# import openpyxl
 
 
 def transform_str_to_int(df, parameters):
@@ -18,14 +19,9 @@ def transform_str_to_int(df, parameters):
         if i == 1:
             df.iloc[:, index] = df.iloc[:, index].astype('category').cat.codes
         index += 1
-    return df
-
 
 def execute(df, parameter_list, try_dc):
-
-    # del df["class"]
-
-    df=transform_str_to_int(df, parameter_list)
+    transform_str_to_int(df, parameter_list)
     store = Storage(df, parameter_list)
 
     calcdc.calculate_cluster(store, try_dc)
@@ -33,16 +29,16 @@ def execute(df, parameter_list, try_dc):
     # for testing returns a list of cluster centers
     log.info(msg=store.df.sort_values(by="maphd", axis=0, ascending=False).to_string())
 
+    # visualisation.plot_2D(store)
+    visualisation.plot_2D_circles(store, "sepal length", "sepal width", "petal length")
+
     #print(store.df.sort_values(by="density", axis=0, ascending=False)[store.df["cluster_center"]==store.df.index]["density"])
 
     # z to dc plot:
     return (store.df,store.cz)
 
-def calculate_z(df, parameter_list, dc_low=0, dc_high=0.05):
-
-    # del df["class"]
-
-    df=transform_str_to_int(df, parameter_list)
+def calculate_z(df, parameter_list, dc_low=0, dc_high=0.2):
+    transform_str_to_int(df, parameter_list)
     store = Storage(df, parameter_list)
 
     return calcdc.get_best_dc(store, dc_low, dc_high)
@@ -86,6 +82,7 @@ else:
     plt.show()
 
 
+execute(reader.read_txt_comma('iris.data'), [0, 0, 0, 0, 1],  0.185)
 """
 df, cz = call()
 store = Storage(reader.read_txt_whitespace('Aggregation.txt'))
