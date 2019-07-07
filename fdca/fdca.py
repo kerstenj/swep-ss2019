@@ -32,57 +32,16 @@ def execute(df, parameter_list, try_dc):
     # visualisation.plot_2D(store)
     visualisation.plot_2D_circles(store, "sepal length", "sepal width", "petal length")
 
-    #print(store.df.sort_values(by="density", axis=0, ascending=False)[store.df["cluster_center"]==store.df.index]["density"])
-
     # z to dc plot:
     return (store.df,store.cz)
 
-def calculate_z(df, parameter_list, dc_low=0, dc_high=0.2):
+def calculate_z(df, parameter_list, dc_low=0, dc_high=0.2, stept_number=200):
     transform_str_to_int(df, parameter_list)
     store = Storage(df, parameter_list)
 
-    return calcdc.get_best_dc(store, dc_low, dc_high)
-
-hi=False
-# hi=True
-
-if hi:
-
-    plt.plot(calculate_z(reader.read_txt_whitespace('fdca/jain.txt'), [0, 0]))
-    # plt.plot(calculate_z(reader.read_txt_whitespace('fdca/flame.txt'), [0, 0]))
-    # plt.plot(calculate_z(reader.read_txt_whitespace('fdca/Aggregation.txt'), [0, 0]))
-    # plt.plot(calculate_z(reader.read_txt_comma('datasets/Iris/iris.data'), [0, 0, 0, 0 ,1]))
-    plt.show()
-
-else:
-
-    # df,cz=execute(reader.read_txt_whitespace('fdca/Aggregation.txt'), [0, 0],  0.0471)
-    # df,cz=execute(reader.read_txt_whitespace('fdca/flame.txt'), [0, 0],  0.06758)
-    df,cz=execute(reader.read_txt_whitespace('fdca/jain.txt'), [0, 0],  0.02835)
-    #0.021
-    #
-    # cluster for try_dc value:
-    fig, ax = plt.subplots()
-    temp = df["cluster_center"].copy()
-    temp[df["cluster_center"] == df.index] = 1
-    #
-    # # Aggregation:
-    ax.scatter(df["x"], df["y"], c=temp)
-    ax.set_xlabel('x')
-    ax.set_ylabel('y')
-    #
-    # # Iris subtable:
-    # ax.scatter(s.df["sepal length"],s.df["sepal width"],c=temp)
-    # ax.set_xlabel('sepal length')
-    # ax.set_ylabel('sepal width')
-    #
-    #
-    ax.grid(True)
-    fig.tight_layout()
-    plt.show()
+    return calcdc.get_best_dc(store, dc_low, dc_high,stept_number)
 
 
-execute(reader.read_txt_comma('iris.data'), [0, 0, 0, 0, 1],  0.185)
 """
 df, cz = call()
 store = Storage(reader.read_txt_whitespace('Aggregation.txt'))

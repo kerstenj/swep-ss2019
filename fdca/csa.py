@@ -23,8 +23,6 @@ def get_maphd_index(distances, density, dc):
 
     for i in range(distances.shape[0]):
         for j in range(distances.shape[0]):
-            # Distances where this density < other density or <= - without itself
-            # if i<=398 and i>=396 and j<=398 and j>=396:
             if density[i] < density[j]:
                 if next_node[i] == -1:
                     next_node[i] = j
@@ -77,17 +75,6 @@ def clustering(next_nodes, cz):
 def calc_cz(df):
     CZ = []
     i = 0
-    # while len(df[1]) > 0:
-    #     if df[0, i] >= df[0].max():
-    #         CZ.append(int(df[2, i]))
-    #         df = np.delete(arr=df, obj=i, axis=1)
-    #     elif df[0, i] >= df[0].mean():
-    #         CZ.append(int(df[2, i]))
-    #         df = np.delete(arr=df, obj=i, axis=1)
-    #
-    #     else:
-    #         break
-    # return CZ
     while len(df[1]) > 0:
         if df[0, 0] >= df[0].max():
             CZ.append(int(df[2, 0]))
@@ -128,7 +115,6 @@ def get_cluster_centers(store):
     store.cz = np.array(calc_cz(
         temp_df.to_numpy().T
     ))
-    # print(store.cz)
 
     store.df['cluster_center'] = clustering(
         store.df['next_node'].to_numpy(),
