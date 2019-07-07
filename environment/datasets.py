@@ -5,6 +5,10 @@ import os
 import help
 
 class Dataset:
+    """
+    A class that represents a dataset.
+    It stores the dataframe and the filepath.
+    """
 
     def __init__(self, name, frame, filepath=None):
         self.name = name
@@ -25,6 +29,9 @@ class Dataset:
 
 
 class DatasetManager:
+    """
+    A class that manages multiple datasets.
+    """
 
     def __init__(self, path):
         self.datasets = {}
@@ -58,7 +65,7 @@ class DatasetManager:
 
     def info(self):
         """"
-        Returns a list of all Datasets with additional information.
+        Returns a list of all datasets with additional information.
         """
         print(self)
 
@@ -90,6 +97,7 @@ class DatasetManager:
         for filepath in files:
             dataset = Dataset.from_file(filepath)
             self.datasets[dataset.name] = dataset
+
 
     def add_datasets(self, datasets):
         """
