@@ -63,22 +63,19 @@ def dist_to_cz(distances, cz):
     return dist_cz
 
 
-def get_average_distance(distances, store):
+def get_z(distances, store):
     result=[]
 
     for i in store.cz:
-        temp_cluster_array=store.df["cluster_center"][store.df["cluster_center"]==i]
-        dist_cz = dist_to_cz(distances, store.df["cluster_center"].to_numpy())
 
-        sum=np.sum(store.df["density"][store.df["cluster_center"]==i])/len(dist_cz)
-
+        temp_df=store.df["density"][store.df["cluster_center"]==i]
+        sum=np.sum(temp_df)/len(temp_df)
         result.append(sum)
 
     return np.nansum(result)/len(store.cz)
 
-def get_best_dc(store,dc_low,dc_high,step_number):
-    # Calculate distances between all data points
-
+def get_best_dc(store,dc_low,dc_high,step_count):
+    # Calculate distances between all dates
     store.distances = get_distances(
         store.df.to_numpy(),
         store.parameters,
@@ -86,7 +83,10 @@ def get_best_dc(store,dc_low,dc_high,step_number):
         store.max_vec.to_numpy()
     )
     # Calculate step different z
-    step =  (dc_high - dc_low) / step_number
+
+
+    step = (dc_high - dc_low) / step_count
+
 
     store.dc = dc_low
 
@@ -105,7 +105,7 @@ def get_best_dc(store,dc_low,dc_high,step_number):
         cluster_center = csa.get_cluster_centers(store)
         store.cz = cluster_center
 
-        z = get_average_distance(store.distances, store)
+        z = get_z(store.distances, store)
         log.info(msg=f'Z: {z}')
 
         z_list.append(z)
