@@ -1,10 +1,9 @@
-import numpy as np
 import pandas as pd
 
-def readTxtFileW(s):
-    df=pd.read_csv(s, delim_whitespace=True)
+def read_txt_whitespace(path):
+    df = pd.read_csv(path, delim_whitespace=True)
     return df
 
-def readTxtFileK(s):
-    df=pd.read_csv(s)
+def read_txt_comma(path):
+    df = pd.read_csv(path)
     return df
