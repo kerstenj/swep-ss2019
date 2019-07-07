@@ -3,9 +3,10 @@ import logging as log
 import pandas as pd
 import reader
 import calcdc
+import visualisation
 from storage import Storage
 import matplotlib.pyplot as plt
-import openpyxl
+# import openpyxl
 
 
 def transform_str_to_int(df, parameters):
@@ -18,7 +19,6 @@ def transform_str_to_int(df, parameters):
         if i == 1:
             df.iloc[:, index] = df.iloc[:, index].astype('category').cat.codes
         index += 1
-    return
 
 
 def execute(df, parameters, try_dc):
@@ -32,13 +32,20 @@ def execute(df, parameters, try_dc):
     store = Storage(df, parameters)
 
     # Calculate clusters
+
     calcdc.calculate_cluster(store, try_dc)
 
     # Logs a list of cluster centers
     log.info(msg=store.df.sort_values(by="maphd", axis=0, ascending=False).to_string())
 
+
+
+    # visualisation.plot_2D(store)
+    visualisation.plot_2D_circles(store, "sepal length", "sepal width", "petal length")
+
     # z to dc plot:
-    return (store.df["cluster_center"], store.cz)
+    return (store.df["cluster_center"],store.cz)
+
 
 def calculate_z(df, parameters, dc_low=0, dc_high=0.2, step_count=200):
     """
