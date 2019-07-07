@@ -18,11 +18,4 @@ if __name__ == '__main__':
         algorithms[algorithm] = algorithm_source.load_plugin(algorithm)
     print('Success')
 
-    print(f'Executing algorithm: "kmeans_naive"')
-    df = datasets['iris'].frame
-
-    algorithms['kmeans_naive'].execute(
-        df.loc[:, df.columns != 'class'],
-        3
-    )
-    #import code; code.interact(local=locals())
+    import code; code.interact(local=locals())

@@ -75,7 +75,7 @@ def clustering(next_nodes, cz):
 
 
 def calc_cz(df):
-    CZ = []
+    cz = []
     i = 0
     # while len(df[1]) > 0:
     #     if df[0, i] >= df[0].max():
@@ -90,22 +90,22 @@ def calc_cz(df):
     # return CZ
     while len(df[1]) > 0:
         if df[0, 0] >= df[0].max():
-            CZ.append(int(df[2, 0]))
+            cz.append(int(df[2, 0]))
             df = np.delete(arr=df, obj=0, axis=1)
         elif df[0, 0] >= df[0].mean():
-            CZ.append(int(df[2, 0]))
+            cz.append(int(df[2, 0]))
             df = np.delete(arr=df, obj=0, axis=1)
 
         else:
             break
-    return CZ
+    return cz
 
 
 def get_cluster_centers(store):
     log.info(f'Test dc: {store.dc}')
     log.info('...')
 
-    # Berechne die Dichte der Datenpunkte abhängig von der Grenzdistanz dc
+    # Calculate the density of the dates dependant on dc
     store.df['density'] = get_density(store.distances, store.dc)
 
     # maphd - Minimaler Abstand zu einem Punkt höherer Dichte (Delta im Paper)
