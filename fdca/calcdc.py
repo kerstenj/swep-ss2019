@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 from numba import njit
 
-import csa
+import fdca.csa as csa
 
 
 @njit

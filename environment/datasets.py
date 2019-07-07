@@ -2,7 +2,7 @@ import pandas as pd
 from prettytable import PrettyTable
 import os
 
-import help
+from environment.help import locate_files_rec, format_size
 
 class Dataset:
     """
@@ -36,7 +36,7 @@ class DatasetManager:
     def __init__(self, path):
         self.datasets = {}
 
-        files = help.locate_files_rec(path, 'data')
+        files = locate_files_rec(path, 'data')
         self.load_datasets(files)
 
 
@@ -52,7 +52,7 @@ class DatasetManager:
             pt.add_row([
                 ds.name,
                 str( len(ds.frame.index) ),
-                help.format_size(ds.frame.memory_usage(deep=True).sum()),
+                format_size(ds.frame.memory_usage(deep=True).sum()),
                 ds.filepath or ''
             ])
 
