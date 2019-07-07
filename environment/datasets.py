@@ -1,8 +1,13 @@
+"""
+This module contains the Dataset and DatasetManager classes.
+"""
+
+import os
 import pandas as pd
 from prettytable import PrettyTable
-import os
 
 from environment.help import locate_files_rec, format_size
+
 
 class Dataset:
     """
@@ -14,7 +19,6 @@ class Dataset:
         self.name = name
         self.frame = frame
         self.filepath = filepath
-
 
     @classmethod
     def from_file(cls, filepath):
@@ -39,7 +43,6 @@ class DatasetManager:
         files = locate_files_rec(path, 'data')
         self.load_datasets(files)
 
-
     def __str__(self):
         pt = PrettyTable(['Name', 'Entries', 'Size in Memory', 'File'])
 
@@ -51,17 +54,15 @@ class DatasetManager:
         for _, ds in self.datasets.items():
             pt.add_row([
                 ds.name,
-                str( len(ds.frame.index) ),
+                str(len(ds.frame.index)),
                 format_size(ds.frame.memory_usage(deep=True).sum()),
                 ds.filepath or ''
             ])
 
         return pt.get_string()
 
-
     def __getitem__(self, name):
         return self.get_by_name(name)
-
 
     def info(self):
         """"
@@ -69,14 +70,12 @@ class DatasetManager:
         """
         print(self)
 
-
     def get_by_name(self, name):
         """
         Returns the dataset with the given name.
         None if it doesn't exist.
         """
         return self.datasets.get(name)
-
 
     def get_by_file(self, filepath):
         """
@@ -88,7 +87,6 @@ class DatasetManager:
                 return ds
         return None
 
-
     def load_datasets(self, files):
         """
         Loads all given files into this DatasetManager.
@@ -97,7 +95,6 @@ class DatasetManager:
         for filepath in files:
             dataset = Dataset.from_file(filepath)
             self.datasets[dataset.name] = dataset
-
 
     def add_datasets(self, datasets):
         """

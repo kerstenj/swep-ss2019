@@ -90,6 +90,7 @@ if __name__ == '__main__':
     try_dc = float(input('Type the dc value to use: '))
 
     print('Executing FDCA...', end='', flush=True)
+    # TODO: Handle output
     clusters = fdca.execute(df, parameters, try_dc)
     z = fdca.calculate_z(df, parameters)
     print('Success')

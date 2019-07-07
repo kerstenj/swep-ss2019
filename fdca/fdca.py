@@ -1,7 +1,7 @@
-import numpy as np
 import logging as log
-import pandas as pd
+import numpy as np
 import matplotlib.pyplot as plt
+import pandas as pd
 
 import fdca.calcdc as calcdc
 import fdca.visualisation as visualisation
@@ -36,7 +36,12 @@ def execute(df, parameters, try_dc):
     log.info(msg=store.df.sort_values(by="maphd", axis=0, ascending=False).to_string())
 
     # visualisation.plot_2D(store)
-    visualisation.plot_2D_circles(store, "sepal length", "sepal width", "petal length")
+    visualisation.plot_2D_circles(
+        store,
+        "sepal length",
+        "sepal width",
+        "petal length"
+    )
 
     # z to dc plot:
     return (store.df["cluster_center"], store.cz)
