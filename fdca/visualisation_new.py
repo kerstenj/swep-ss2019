@@ -105,7 +105,8 @@ def plot_3d(df, centers, x, y, z):
                 name = "Cluster " + str(i),
                 mode = 'markers',
                 marker = dict(
-                    opacity = 0.6
+                    opacity = 0.6,
+                    size = 0.5
                 )
             )
         )
@@ -120,7 +121,10 @@ def plot_3d(df, centers, x, y, z):
             name = "Cluster Centers",
             mode = "markers",
             marker = dict(
-                color = "rgb(0, 0, 0)"
+                color = "rgb(0, 0, 0)",
+                opacity = 0.6,
+                size = 0.5
+
             )
         )
     )
@@ -154,30 +158,54 @@ def plot_3d(df, centers, x, y, z):
     # Plot
     py.plot(figure, filename='basic-3d-scatter', auto_open=True)
 
-def plot_3d_test(df, centers, x, y, z, size):
-    clusters = {}
+def plot_x_y_date(df, centers, x, y, date, steps=100):
+    points = {}
 
-    for index, item in df.iterrows():
-        if item["cluster_center"] in clusters:
-            clusters[item["cluster_center"]] += item[size]
-        else:
-            clusters[item["cluster_center"]] = item[size]
+    date_min = df[date].min()
+    date_max = df[date].max()
+    date_step = (date_max - date_min) / steps
+
+    print(date_min, date_max, date_step)
+
+    i = date_min
+    while i < date_max:
+        for index, item in df[(df.date >= i) & (df.date <= i+date_step)].iterrows():
+            if item["cluster_center"] in points:
+                if i in points[item["cluster_center"]]["dates"]:
+                    points[item["cluster_center"]]["dates"] += 1
+                else:
+                    points[item["cluster_center"]]["dates"].update({str(i): 1})
+            else:
+                points[item["cluster_center"]] = {
+                    "x": str(item[x]),
+                    "y": str(item[y]),
+                    "dates": {
+                        str(i): 1
+                    }
+                }
+
+        i += date_step
 
     traces = []
 
-    for item in clusters:
-        traces.append(
-            go.Scatter3d(
-                x = df[df.index == item][x],
-                y = df[df.index == item][y],
-                z = df[df.index == item][z],
-                name = "Cluster " + str(item),
-                mode = "markers",
-                marker = dict(
-                    size = clusters[item]
+    for item in points:
+        cluster_x = points[item]["x"]
+        cluster_y = points[item]["y"]
+
+        for time in points[item]["dates"]:
+            traces.append(
+                go.Scatter3d(
+                    x = cluster_x,
+                    y = cluster_y,
+                    z = time,
+                    name = "Cluster " + str(item),
+                    mode = "markers",
+                    marker = dict(
+                        size = points[item][time],
+                        opacity = 0.5
+                    )
                 )
             )
-        )
 
     layout= go.Layout(
         # title= 'Clustering',
@@ -186,7 +214,19 @@ def plot_3d_test(df, centers, x, y, z, size):
             r = 0,
             b = 0,
             t = 0
-        )
+        ),
+        scene=dict(
+            xaxis= dict(
+                title= x
+            ),
+            yaxis=dict(
+                title= y
+            ),
+            zaxis = {
+                'title': date
+            }
+        ),
+        legend = {'orientation': 'h'}
     )
 
     figure = go.Figure(data=traces, layout=layout)

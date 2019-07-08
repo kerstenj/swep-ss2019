@@ -86,7 +86,7 @@ def get_test_df(df):
     result['date'] = pd.to_datetime(result['date'])
 
     result = result.drop(['cluster', 'tweet_id', 'lex_source', 'lex_info_class', 'lex_informativeness'], axis=1)
-    result = result[(result['date'] >= '2018-09-13') & (result['date'] <= '2018-09-17')]
+    result = result[(result['date'] >= '2018-09-13') & (result['date'] <= '2018-09-14')]
     result['date'] = result['date'].astype('int64')
     result = result.reset_index(drop=True)
 
@@ -117,7 +117,7 @@ if __name__ == '__main__':
     #         col_index += 1
     #     else:
     #         print('Invalid option. Please try again.')
-    
+
     try_dc = float(input('Type the dc value to use: '))
 
     print('Executing FDCA...', flush=True)
@@ -126,7 +126,7 @@ if __name__ == '__main__':
     result_df['date'] = result_df['date'].astype('datetime64[ns]')
 
     # Plots the data
-    vi.plot_3d(result_df, result_centers, "latitude", "longitude", "date")
+    vi.plot_x_y_date(result_df, result_centers, "latitude", "longitude", "date")
 
     # z = fdca.calculate_z(df, parameters, dc_high=0.026)
     print('Success')
