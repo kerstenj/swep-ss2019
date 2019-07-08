@@ -43,7 +43,8 @@ def execute(df, parameters, try_dc):
 
 def calculate_z(df, parameters, dc_low=0, dc_high=0.2, step_count=200):
     """
-
+    Calculate a measure value Z for every dc between dc_low and dc_high
+    with step_count steps between them.
     """
     # Initialisation
     transform_str_to_int(df, parameters)

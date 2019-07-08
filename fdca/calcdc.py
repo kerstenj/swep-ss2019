@@ -47,7 +47,7 @@ def dist(vec_a, vec_b, parameters, max_vec, min_vec, euclid_norm=True):
 @njit
 def get_distances(np_array, parameters, min_vec, max_vec):
     """
-
+    Returns an array for every distance between two data points.
     """
     res = np.zeros((np_array.shape[0], np_array.shape[0]))
     for i in range(np_array.shape[0]):
@@ -61,21 +61,9 @@ def get_distances(np_array, parameters, min_vec, max_vec):
     # "Dreiecksmatrix" zu "quadratischer Matrix":
     return res + res.transpose()
 
-
-@njit
-def dist_to_centers(distances, cz):
-    """
-
-    """
-    dist_cz = np.zeros(cz.shape[0])
-    for i in range(cz.shape[0]):
-        dist_cz[i] = distances[i, cz[i]]
-    return dist_cz
-
-
 def get_z(distances, store):
     """
-
+    Returns a Z value for a given dc and dataframe.
     """
     result = []
 
@@ -89,7 +77,7 @@ def get_z(distances, store):
 
 def get_dc_z_map(store, dc_low, dc_high, step_count):
     """
-
+    Returns the List of Z values for a dataframe.
     """
     # Calculate distances between all dates
     store.distances = get_distances(
@@ -130,7 +118,7 @@ def get_dc_z_map(store, dc_low, dc_high, step_count):
 
 def calculate_cluster(store, try_dc):
     """
-
+    Calculate cluster centers for a given dc.
     """
     # Calculate distances between all dates
     store.distances = get_distances(
