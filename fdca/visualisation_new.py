@@ -18,7 +18,7 @@ def plot_line(series):
 def plot_2d(store, x, y):
     traces = []
 
-    for i in store.cz:
+    for i in store.centers:
         temp_cluster_array = store.df[(store.df["cluster_center"] == i) & (store.df["cluster_center"] != store.df.index)]
 
         traces.append(
@@ -93,7 +93,7 @@ def plot_2d(store, x, y):
 def plot_3d(store, x, y, z):
     traces = []
 
-    for i in store.cz:
+    for i in store.centers:
         temp_cluster_array = store.df[(store.df["cluster_center"] == i) & (store.df["cluster_center"] != store.df.index)]
 
         # Create a trace
@@ -139,7 +139,6 @@ def plot_3d(store, x, y, z):
     # Plot
     py.plot(figure, filename='basic-3d-scatter', auto_open=True)
 
-# doesn't work at the moment
 def plot_3d_test(store, x, y, z, size):
     clusters = {}
 

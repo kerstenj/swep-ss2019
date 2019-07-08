@@ -1,5 +1,5 @@
 """
-This module contains the main 
+This module contains the main
 """
 
 import logging as log
@@ -109,7 +109,7 @@ def calculate_centers(df):
 
 def get_centers(store):
     """
-    
+
     """
     log.info('Test dc: {store.dc}')
     log.info('...')
@@ -134,12 +134,12 @@ def get_centers(store):
     )
     temp_df['index'] = temp_df.index
 
-    store.cz = np.array(calculate_centers(
+    store.centers = np.array(calculate_centers(
         temp_df.to_numpy().T
     ))
 
     store.df['cluster_center'] = clustering(
         store.df['next_node'].to_numpy(),
-        store.cz
+        store.centers
     )
-    return store.cz
+    return store.centers

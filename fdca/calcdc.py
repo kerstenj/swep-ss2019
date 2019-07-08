@@ -79,12 +79,12 @@ def get_z(distances, store):
     """
     result = []
 
-    for i in store.cz:
+    for i in store.centers:
         temp_df = store.df["density"][store.df["cluster_center"] == i]
         sum = np.sum(temp_df) / len(temp_df)
         result.append(sum)
 
-    return np.nansum(result) / len(store.cz)
+    return np.nansum(result) / len(store.centers)
 
 
 def get_dc_z_map(store, dc_low, dc_high, step_count):
@@ -116,7 +116,7 @@ def get_dc_z_map(store, dc_low, dc_high, step_count):
         i += 1
 
         cluster_center = csa.get_centers(store)
-        store.cz = cluster_center
+        store.centers = cluster_center
 
         z = get_z(store.distances, store)
         log.info(msg=f'Z: {z}')
@@ -142,4 +142,4 @@ def calculate_cluster(store, try_dc):
     store.dc = try_dc
 
     cluster_center = csa.get_centers(store)
-    store.cz = cluster_center
+    store.centers = cluster_center
