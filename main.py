@@ -93,6 +93,62 @@ def get_test_df(df):
 
     return result
 
+
+def find_dc_with_graph(df, parameters):
+    repeat = True
+    while repeat:
+        print('\nWhich parameters should be used to find the dc? Leave input empty to use default value.')
+        dc_low = input("start value (default: 0): ").split()
+        dc_high = input("end value (default: 0.2): ").split()
+        step_count = input("number of iterations (default: 200): ").split()
+
+        if len(dc_low) < 1:
+            dc_low.append(0)
+
+        if len(dc_high) < 1:
+            dc_high.append(0.2)
+
+        if len(step_count) < 1:
+            step_count.append(200)
+
+        print('\nExecuting FDCA...', flush=True)
+
+        dc_z_map = fdca.calculate_z(df, parameters, dc_low=float(dc_low[0]), dc_high=float(dc_high[0]), step_count=int(step_count[0]))
+        vi.plot_line(dc_z_map)
+
+        print('Success\n')
+
+        while True:
+            prompt = input('Do you want to try other parameters? [y/n] ').split()
+
+            if prompt[0] == 'y':
+                break
+            elif prompt[0] == 'n':
+                repeat = False
+                break
+            else:
+                print('Invalid input!')
+
+
+def use_dc_for_clustering(df, parameters):
+    try_dc = float(input('Type the dc value to use: '))
+
+    print('Executing FDCA...', flush=True)
+    # TODO: Handle output
+    result_df, result_centers = fdca.execute(df, parameters, try_dc)
+    result_df['date'] = result_df['date'].astype('datetime64[ns]')
+    result_df['tweet_id'] = tweet_ids
+
+    result_df.to_csv('fdca_twitter.csv')
+
+    # Plots the data
+    # vi.plot_x_y_date(result_df, result_centers, "latitude", "longitude", "date")
+    # vi.plot_3d(result_df, result_centers, "latitude", "longitude", "date")
+    vi.plot_class_bars(result_df, result_centers, "lex_info_class")
+
+    print('Success\n')
+
+
 if __name__ == '__main__':
     print('Loading all available datasets...',flush=True)
     datasets = ds.DatasetManager(DATASET_PATH)
@@ -123,22 +179,27 @@ if __name__ == '__main__':
         else:
             print('Invalid option. Please try again.')
 
-    try_dc = float(input('Type the dc value to use: '))
+    # Ask user if he wants to cluster with a fixed dc or find the dc with z
+    print("\nWhat do you want to do?")
 
-    print('Executing FDCA...', flush=True)
-    # TODO: Handle output
-    result_df, result_centers = fdca.execute(df, parameters, try_dc)
-    result_df['date'] = result_df['date'].astype('datetime64[ns]')
-    result_df['tweet_id'] = tweet_ids
+    pt = PrettyTable(['Utility', 'Description'])
+    pt.align['Utility'] = 'l'
+    pt.align['Description'] = 'l'
 
-    result_df.to_csv('fdca_twitter.csv')
+    pt.add_row(['find_dc', 'Use a diagramm of different z and dc values to find the best dc.'])
+    pt.add_row(['use_dc', 'Use a specific dc value to cluster the data and plot the clustered points.'])
 
-    # Plots the data
-    # vi.plot_x_y_date(result_df, result_centers, "latitude", "longitude", "date")
-    # vi.plot_3d(result_df, result_centers, "latitude", "longitude", "date")
-    vi.plot_class_bars(result_df, result_centers, "lex_info_class")
+    print(pt)
 
-    # dc_z_map = fdca.calculate_z(df, parameters, dc_high=0.026)
-    # vi.plot_line(dc_z_map)
+    command = None
+    while(True):
+        command = input('> ').split()
 
-    print('Success')
+        if command[0] == 'find_dc':
+            find_dc_with_graph(df, parameters)
+            break
+        elif command[0] == "use_dc":
+            use_dc_for_clustering(df, parameters)
+            break
+        else:
+            print('Invalid command!')
