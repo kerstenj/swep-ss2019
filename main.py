@@ -85,7 +85,7 @@ def get_test_df(df):
     result = df.copy(True)
     result['date'] = pd.to_datetime(result['date'])
 
-    result = result.drop(['cluster', 'tweet_id', 'lex_source', 'lex_info_class', 'lex_informativeness'], axis=1)
+    result = result.drop(['cluster', 'lex_source', 'lex_info_class', 'lex_informativeness'], axis=1)
     result = result[(result['date'] >= '2018-09-13') & (result['date'] <= '2018-09-17')]
     result['date'] = result['date'].astype('int64')
     result = result.reset_index(drop=True)
@@ -107,6 +107,9 @@ if __name__ == '__main__':
     df = get_test_df(dataset.frame)
     print(df)
 
+    tweet_ids = df['tweet_id'].copy(True)
+    df = df.drop(['tweet_id'], axis=1)
+
     parameters = [0,0,0,1]
     # print('Setup parameter types. Type 0 for numeric and 1 for categorical data.')
     # col_index = 0
@@ -124,6 +127,9 @@ if __name__ == '__main__':
     # TODO: Handle output
     result_df, result_centers = fdca.execute(df, parameters, try_dc)
     result_df['date'] = result_df['date'].astype('datetime64[ns]')
+    result_df['tweet_id'] = tweet_ids
+
+    result_df.to_csv('fdca_twitter.csv')
 
     # Plots the data
     vi.plot_3d(result_df, result_centers, "latitude", "longitude", "date")
