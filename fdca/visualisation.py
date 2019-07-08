@@ -260,7 +260,9 @@ def plot_class_bars(df, centers, class_column, barmode="stack"):
         )
 
     layout = go.Layout(
-        barmode = barmode
+        barmode = barmode,
+        xaxis = {"title": "Cluster"},
+        yaxis = {"title": "Number of Tweets"}
     )
 
     figure = go.Figure(data=traces, layout=layout)

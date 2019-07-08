@@ -138,5 +138,7 @@ if __name__ == '__main__':
     # vi.plot_3d(result_df, result_centers, "latitude", "longitude", "date")
     vi.plot_class_bars(result_df, result_centers, "lex_info_class")
 
-    # z = fdca.calculate_z(df, parameters, dc_high=0.026)
+    # dc_z_map = fdca.calculate_z(df, parameters, dc_high=0.026)
+    # vi.plot_line(dc_z_map)
+
     print('Success')
