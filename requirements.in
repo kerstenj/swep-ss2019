@@ -4,3 +4,4 @@ pandas
 numba
 prettytable
 openpyxl
+plotly
