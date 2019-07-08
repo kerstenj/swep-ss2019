@@ -16,7 +16,7 @@ def plot_line(series):
     )
 
     layout= go.Layout(
-        title= 'Z value with different dc values',
+        title= 'Z values with different dc values',
         xaxis = {
             "title": "dc"
         },
@@ -27,6 +27,7 @@ def plot_line(series):
 
     figure = go.Figure(data=[trace], layout=layout)
     py.plot(figure, filename="basic-line", auto_open=True)
+
 
 def plot_2d(df, centers, x, y):
     traces = []
@@ -72,6 +73,7 @@ def plot_2d(df, centers, x, y):
     figure = go.Figure(data=data, layout=layout)
     py.plot(figure, filename='basic-scatter', auto_open=True)
 
+
 # def plot_2d_circles(store, x, y, size):
 #     trace = go.Scatter(
 #         x = store.df[x],
@@ -98,6 +100,7 @@ def plot_2d(df, centers, x, y):
 #
 #     figure = go.Figure(data=data, layout=layout)
 #     py.plot(figure, filename='basic-scatter', auto_open=True)
+
 
 def plot_3d(df, centers, x, y, z):
     traces = []
@@ -165,7 +168,8 @@ def plot_3d(df, centers, x, y, z):
     figure = go.Figure(data=data, layout=layout)
     py.plot(figure, filename='basic-3d-scatter', auto_open=True)
 
-def plot_x_y_date(df, centers, x, y, date, steps=100):
+
+def plot_x_y_date(df, centers, x, y, date, steps=200):
     points = {}
 
     date_min = df[date].min()
@@ -245,7 +249,8 @@ def plot_x_y_date(df, centers, x, y, date, steps=100):
     figure = go.Figure(data=[trace], layout=layout)
     py.plot(figure, filename='3d-scatter-test', auto_open=True)
 
-def plot_class_bars(df, centers, class_column, barmode="stack"):
+
+def plot_class_bars(df, centers, class_column):
     classes = {}
     for index, item in df.iterrows():
         if item[class_column] in classes:
@@ -269,10 +274,58 @@ def plot_class_bars(df, centers, class_column, barmode="stack"):
         )
 
     layout = go.Layout(
-        barmode = barmode,
+        barmode = 'stack',
         xaxis = {"title": "Cluster"},
         yaxis = {"title": "Number of Tweets"}
     )
 
     figure = go.Figure(data=traces, layout=layout)
     py.plot(figure, filename='grouped-bar')
+
+
+def plot_2d_geo(df, centers):
+    limits = [(0,2),(3,10),(11,20),(21,50),(50,3000)]
+    colors = ["rgb(0,116,217)","rgb(255,65,54)","rgb(133,20,75)","rgb(255,133,27)","lightgrey"]
+    cities = []
+    scale = 5000
+
+    for i in range(len(limits)):
+        lim = limits[i]
+        df_sub = df[lim[0]:lim[1]]
+        city = go.Scattergeo(
+            locationmode = 'USA-states',
+            lon = df_sub['lon'],
+            lat = df_sub['lat'],
+            text = df_sub['text'],
+            marker = go.scattergeo.Marker(
+                size = df_sub['pop']/scale,
+                color = colors[i],
+                line = go.scattergeo.marker.Line(
+                    width=0.5, color='rgb(40,40,40)'
+                ),
+                sizemode = 'area'
+            ),
+            name = '{0} - {1}'.format(lim[0],lim[1]) )
+        cities.append(city)
+
+    layout = go.Layout(
+            title = go.layout.Title(
+                text = '2014 US city populations<br>(Click legend to toggle traces)'
+            ),
+            showlegend = True,
+            geo = go.layout.Geo(
+                scope = 'usa',
+                projection = go.layout.geo.Projection(
+                    type='albers usa'
+                ),
+                showland = True,
+                landcolor = 'rgb(217, 217, 217)',
+                subunitwidth=1,
+                countrywidth=1,
+                subunitcolor="rgb(255, 255, 255)",
+                countrycolor="rgb(255, 255, 255)"
+            )
+        )
+
+    fig = go.Figure(data=cities, layout=layout)
+    py.iplot(fig, filename='d3-bubble-map-populations')

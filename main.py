@@ -98,32 +98,32 @@ def find_dc_with_graph(df, parameters):
     repeat = True
     while repeat:
         print('\nWhich parameters should be used to find the dc? Leave input empty to use default value.')
-        dc_low = input("start value (default: 0): ").split()
-        dc_high = input("end value (default: 0.2): ").split()
-        step_count = input("number of iterations (default: 200): ").split()
+        dc_low = input("start value (default: 0): ")
+        dc_high = input("end value (default: 0.2): ")
+        step_count = input("number of iterations (default: 200): ")
 
-        if len(dc_low) < 1:
-            dc_low.append(0)
+        if dc_low == '':
+            dc_low = 0
 
-        if len(dc_high) < 1:
-            dc_high.append(0.2)
+        if dc_high == '':
+            dc_high = 0.2
 
-        if len(step_count) < 1:
-            step_count.append(200)
+        if step_count == '':
+            step_count = 200
 
         print('\nExecuting FDCA...', flush=True)
 
-        dc_z_map = fdca.calculate_z(df, parameters, dc_low=float(dc_low[0]), dc_high=float(dc_high[0]), step_count=int(step_count[0]))
+        dc_z_map = fdca.calculate_z(df, parameters, dc_low=float(dc_low), dc_high=float(dc_high), step_count=int(step_count))
         vi.plot_line(dc_z_map)
 
         print('Success\n')
 
         while True:
-            prompt = input('Do you want to try other parameters? [y/n] ').split()
+            prompt = input('Do you want to try other parameters? [y/n] ')
 
-            if prompt[0] == 'y':
+            if prompt == 'y':
                 break
-            elif prompt[0] == 'n':
+            elif prompt == 'n':
                 repeat = False
                 break
             else:
@@ -133,7 +133,7 @@ def find_dc_with_graph(df, parameters):
 def use_dc_for_clustering(df, parameters):
     try_dc = float(input('Type the dc value to use: '))
 
-    print('Executing FDCA...', flush=True)
+    print('\nExecuting FDCA...', flush=True)
     # TODO: Handle output
     result_df, result_centers = fdca.execute(df, parameters, try_dc)
     result_df['date'] = result_df['date'].astype('datetime64[ns]')
@@ -141,12 +141,92 @@ def use_dc_for_clustering(df, parameters):
 
     result_df.to_csv('fdca_twitter.csv')
 
-    # Plots the data
-    # vi.plot_x_y_date(result_df, result_centers, "latitude", "longitude", "date")
-    # vi.plot_3d(result_df, result_centers, "latitude", "longitude", "date")
-    vi.plot_class_bars(result_df, result_centers, "lex_info_class")
+    print('Success')
 
-    print('Success\n')
+    repeat = True
+    while repeat:
+        print('\nHow do you want to plot your data?')
+
+        pt = PrettyTable(['Method', 'Description'])
+        pt.align['Method'] = 'l'
+        pt.align['Description'] = 'l'
+
+        pt.add_row(['0', 'Plots all data points in a two-dimensional coordinate system and colors them by cluster.'])
+        pt.add_row(['1', 'Work in progress. Do not use!'])
+        pt.add_row(['2', 'Plots all data points in a three-dimensional coordinate system and colors them by cluster.'])
+        pt.add_row(['3', 'Can be used to show the number of tweet in the clusters over time.\nPlots only the cluster centers in a three-dimensional coordinate system and resizes them depending on the number of tweets in that cluster.\nThe values get split in intervals on the z-axis.'])
+        pt.add_row(['4', 'Plots a bar chart with one bar per cluster center and colored parts for different classes/categories.'])
+
+        print(pt)
+
+        command = None
+        while True:
+            command = input('> ')
+
+            if command == '0':
+                print('\nWhich parameters should be used for the plot?')
+                xaxis = input("x-axis: ")
+                yaxis = input("y-axis: ")
+
+                try:
+                    vi.plot_2d(result_df, result_centers, xaxis, yaxis)
+                except:
+                    print('\nSomething went wrong during plotting.')
+
+                break
+            elif command == "1":
+                print('Invalid command!')
+            elif command == "2":
+                print('\nWhich parameters should be used for the plot?')
+                xaxis = input("x-axis: ")
+                yaxis = input("y-axis: ")
+                zaxis = input("z-axis: ")
+
+                try:
+                    vi.plot_3d(result_df, result_centers, xaxis, yaxis, zaxis)
+                except:
+                    print('\nSomething went wrong during plotting.')
+
+                break
+            elif command == "3":
+                print('\nWhich parameters should be used for the plot? Leave input empty to use default value.')
+                xaxis = input("x-axis: ")
+                yaxis = input("y-axis: ")
+                zaxis = input("z-axis: ")
+                steps = input("number of intervalls (default: 200): ")
+
+                try:
+                    if steps != '':
+                        vi.plot_x_y_date(result_df, result_centers, xaxis, yaxis, zaxis, int(steps))
+                    else:
+                        vi.plot_x_y_date(result_df, result_centers, xaxis, yaxis, zaxis)
+                except:
+                    print('\nSomething went wrong during plotting.')
+
+                break
+            elif command == "4":
+                print('\nWhich parameters should be used for the plot?')
+                class_column = input("class column (e.g. lex_info_class): ")
+
+                try:
+                    vi.plot_class_bars(result_df, result_centers, class_column)
+                except:
+                    print('\nSomething went wrong during plotting.')
+
+                break
+            else:
+                print('Invalid command!')
+
+        while True:
+            prompt = input('\nDo you want to do another plot? [y/n] ')
+
+            if prompt == 'y':
+                break
+            elif prompt == 'n':
+                repeat = False
+                break
+            else:
+                print('Invalid input!')
 
 
 if __name__ == '__main__':
@@ -193,12 +273,12 @@ if __name__ == '__main__':
 
     command = None
     while(True):
-        command = input('> ').split()
+        command = input('> ')
 
-        if command[0] == 'find_dc':
+        if command == 'find_dc':
             find_dc_with_graph(df, parameters)
             break
-        elif command[0] == "use_dc":
+        elif command == "use_dc":
             use_dc_for_clustering(df, parameters)
             break
         else:
