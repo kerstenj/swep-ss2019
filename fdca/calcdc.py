@@ -63,7 +63,7 @@ def get_distances(np_array, parameters, min_vec, max_vec):
 
 
 @njit
-def dist_to_cz(distances, cz):
+def dist_to_centers(distances, cz):
     """
 
     """
@@ -87,7 +87,7 @@ def get_z(distances, store):
     return np.nansum(result) / len(store.cz)
 
 
-def get_best_dc(store, dc_low, dc_high, step_count):
+def get_dc_z_map(store, dc_low, dc_high, step_count):
     """
 
     """
@@ -115,7 +115,7 @@ def get_best_dc(store, dc_low, dc_high, step_count):
         log.info(msg='{i}te Berechnung')
         i += 1
 
-        cluster_center = csa.get_cluster_centers(store)
+        cluster_center = csa.get_centers(store)
         store.cz = cluster_center
 
         z = get_z(store.distances, store)
@@ -141,5 +141,5 @@ def calculate_cluster(store, try_dc):
     )
     store.dc = try_dc
 
-    cluster_center = csa.get_cluster_centers(store)
+    cluster_center = csa.get_centers(store)
     store.cz = cluster_center

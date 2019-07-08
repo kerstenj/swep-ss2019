@@ -31,6 +31,8 @@ def handle_manipulation(df):
             pt.add_row(['del_column {column...}', 'Deletes the given columns'])
             pt.add_row(['filter_date {start} {end}', 'Filters the dataframe by the given time range. Input datetime as {year}-{month}-{day}-{hour}:{minute}:{second}'])
             pt.add_row(['to_dtype {column} {dtype}', 'Converts the given column to the given dtype.'])
+
+            print(pt)
         elif command[0] == 'set_index':
             try:
                 df = df.set_index(command[1])
@@ -89,7 +91,7 @@ if __name__ == '__main__':
     
     try_dc = float(input('Type the dc value to use: '))
 
-    print('Executing FDCA...', end='', flush=True)
+    print('Executing FDCA...', flush=True)
     # TODO: Handle output
     clusters = fdca.execute(df, parameters, try_dc)
     z = fdca.calculate_z(df, parameters)

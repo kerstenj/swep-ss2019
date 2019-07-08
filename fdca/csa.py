@@ -12,7 +12,7 @@ from numba import njit
 @njit
 def get_density(distances, dc):
     """
-    Calculates the density of each date from the distances and the dc value.
+    Returns the density of each date calculated by the distances and the dc value.
     """
     dist_cz = np.zeros(distances.shape[0])
 
@@ -89,7 +89,7 @@ def clustering(next_nodes, cz):
     return result
 
 
-def calc_cz(df):
+def calculate_centers(df):
     """
 
     """
@@ -107,7 +107,7 @@ def calc_cz(df):
     return cz
 
 
-def get_cluster_centers(store):
+def get_centers(store):
     """
     
     """
@@ -134,7 +134,7 @@ def get_cluster_centers(store):
     )
     temp_df['index'] = temp_df.index
 
-    store.cz = np.array(calc_cz(
+    store.cz = np.array(calculate_centers(
         temp_df.to_numpy().T
     ))
 

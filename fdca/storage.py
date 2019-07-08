@@ -13,7 +13,7 @@ class Storage:
         # Distances between all points
         self.distances = None
         # 
-        self.cz = None
+        self.centers = None
         # Row count of the dataframe e.g. number of dates
         self.row_count = len(df.index)
         # Column count of the dataframe e.g. number of parameters per date

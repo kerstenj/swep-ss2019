@@ -15,7 +15,7 @@ def transform_str_to_int(df, parameters):
     index = 0
     for i in parameters:
         if i == 1:
-            df.iloc[:, index] = df.iloc[:, index].astype('category').cat.codes
+           df .iloc[:, index] = df.iloc[:, index].astype('category').cat.codes
         index += 1
 
 
@@ -37,8 +37,11 @@ def execute(df, parameters, try_dc):
     # Plots the data
     vi.plot_3d_test(store, "sepal length", "sepal width", "petal length", "petal width")
 
+    # Cleanup dataframe
+    df.drop(['maphd', 'next_node'], axis=1)
+
     # z to dc plot:
-    return (store.df["cluster_center"], store.cz)
+    return (store.df, store.centers)
 
 
 def calculate_z(df, parameters, dc_low=0, dc_high=0.2, step_count=200):
@@ -50,7 +53,7 @@ def calculate_z(df, parameters, dc_low=0, dc_high=0.2, step_count=200):
     store = Storage(df, parameters)
 
     #
-    temp = calcdc.get_best_dc(store, dc_low, dc_high, step_count)
+    temp = calcdc.get_dc_z_map(store, dc_low, dc_high, step_count)
 
     # Plots a graph of the calculated z values
     # vi.plot_line(temp)
