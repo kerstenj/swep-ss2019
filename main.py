@@ -7,10 +7,10 @@ import fdca.fdca as fdca
 DATASET_PATH = './datasets/'
 
 def handle_manipulation(df):
-    df = df.copy(True)
+    result = df.copy(True)
     # Convert date column to datetime if it exists
-    if 'date' in df.columns:
-        df['date'] = pd.to_datetime(df['date'])
+    if 'date' in result.columns:
+        result['date'] = pd.to_datetime(result['date'])
 
     print('\nNow you can manipulate the dataframe before applying the FDCA to it.\nType help for available commands.')
     command = None
@@ -24,10 +24,9 @@ def handle_manipulation(df):
 
             pt.add_row(['end', 'Ends the manipulation step'])
             pt.add_row(['help', 'Prints all available commands'])
-            pt.add_row(['print', 'Prints the current dataframe'])
-            pt.add_row(['dtypes', 'Prints the datatypes of all columns'])
+            pt.add_row(['reload', 'Reloads the dataframe'])
+            pt.add_row(['print {object}', 'Prints the given object. Available objects: df, head, tail, dtypes, columns'])
             pt.add_row(['set_index {column}', 'Sets the given column as index'])
-            pt.add_row(['del_column', 'Deletes the given columns'])
             pt.add_row(['del_column {column...}', 'Deletes the given columns'])
             pt.add_row(['filter_date {start} {end}', 'Filters the dataframe by the given time range. Input datetime as {year}-{month}-{day}-{hour}:{minute}:{second}'])
             pt.add_row(['to_dtype {column} {dtype}', 'Converts the given column to the given dtype.'])
@@ -35,33 +34,46 @@ def handle_manipulation(df):
             print(pt)
         elif command[0] == 'set_index':
             try:
-                df = df.set_index(command[1])
+                result = result.set_index(command[1])
             except KeyError:
                 print('The given column doesn\'t exist')
         elif command[0] == 'del_column':
             try:
-                df = df.drop(command[1:], axis=1)
+                result = result.drop(command[1:], axis=1)
             except:
                 print('One of the given columns doesn\'t exist')
         elif command[0] == 'filter_date':
-            if 'date' not in df.columns:
+            if 'date' not in result.columns:
                 print('This dataframe doesn\'t have a \'date\' column')
                 continue
             try:
-                df = df[(df['date'] >= command[1]) & (df['date'] <= command[2])]
+                result = result[(result['date'] >= command[1]) & (result['date'] <= command[2])]
             except:
                 print('Something went wrong during filtering')
-        elif command[0] == 'dtypes':
-            print(df.dtypes)
         elif command[0] == 'print':
-            print(df)
+            if len(command) < 2:
+                print('Available objects to print:  head, tail, dtypes, columns. Default is dataframe.')
+                continue
+
+            if command[1] == 'head':
+                print(result.head)
+            elif command[1] == 'tail':
+                print(result.tail)
+            elif command[1] == 'dtypes':
+                print(result.dtypes)
+            elif command[1] == 'columns':
+                print(result.columns)
+            else:
+                print(result)
         elif command[0] == 'to_dtype':
             try:
-                df[command[1]] = df[command[1]].astype(command[2])
+                result[command[1]] = result[command[1]].astype(command[2])
             except:
                 print('Something went wrong during conversion')
+        elif command[0] == 'reload':
+            result = df.copy(True)
         elif command[0] == 'end':
-            return df
+            return result
         else:
             print('Invalid command!')
 
