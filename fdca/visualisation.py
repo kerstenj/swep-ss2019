@@ -15,9 +15,18 @@ def plot_line(series):
         mode = "lines"
     )
 
-    data = [trace]
+    layout= go.Layout(
+        title= 'Z value with different dc values',
+        xaxis = {
+            "title": "dc"
+        },
+        yaxis = {
+            "title": "Z"
+        }
+    )
 
-    py.plot(data, filename="basic-line", auto_open=True)
+    figure = go.Figure(data=[trace], layout=layout)
+    py.plot(figure, filename="basic-line", auto_open=True)
 
 def plot_2d(df, centers, x, y):
     traces = []
