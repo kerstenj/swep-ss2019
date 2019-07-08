@@ -165,8 +165,6 @@ def plot_x_y_date(df, centers, x, y, date, steps=100):
     date_max = df[date].max()
     date_step = (date_max - date_min) / steps
 
-    print(date_min, date_max, date_step)
-
     i = date_min
     while i < date_max:
         for index, item in df[(df.date >= i) & (df.date <= i+date_step)].iterrows():

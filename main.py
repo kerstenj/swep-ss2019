@@ -86,7 +86,7 @@ def get_test_df(df):
     result['date'] = pd.to_datetime(result['date'])
 
     result = result.drop(['cluster', 'lex_source', 'lex_info_class', 'lex_informativeness'], axis=1)
-    result = result[(result['date'] >= '2018-09-13') & (result['date'] <= '2018-09-17')]
+    result = result[(result['date'] >= '2018-09-13') & (result['date'] <= '2018-09-14')]
     result['date'] = result['date'].astype('int64')
     result = result.reset_index(drop=True)
 
