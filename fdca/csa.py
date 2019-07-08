@@ -1,5 +1,5 @@
 """
-This module contains the main 
+This module contains the main
 """
 
 import logging as log
@@ -28,7 +28,7 @@ def get_density(distances, dc):
 @njit
 def get_maphd_index(distances, density, dc):
     """
-
+    Returns for every datapoint the nearest data point with a higher density.
     """
     next_node = np.full(distances.shape[0], -1)
 
@@ -51,7 +51,7 @@ def get_maphd_index(distances, density, dc):
 @njit
 def get_maphd(distances, next_nodes):
     """
-
+    Returns the distance to the nearest data point with a higher density.
     """
     maphd = np.zeros(distances.shape[0])
     for i in range(distances.shape[0]):
@@ -66,7 +66,7 @@ def get_maphd(distances, next_nodes):
 @njit
 def clustering(next_nodes, cz):
     """
-
+Returns a list of the cluster center indices for every data point.
     """
     result = np.full(next_nodes.shape[0], -1)
     i = -1
@@ -91,7 +91,7 @@ def clustering(next_nodes, cz):
 
 def calculate_centers(df):
     """
-
+    Returns the cluster centers.
     """
     cz = []
     i = 0
@@ -109,7 +109,7 @@ def calculate_centers(df):
 
 def get_centers(store):
     """
-    
+    Returns the cluster centers as a list.
     """
     log.info('Test dc: {store.dc}')
     log.info('...')
