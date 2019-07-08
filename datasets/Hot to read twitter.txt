@@ -1,2 +1,2 @@
-pd.read_csv('twitter.data', sep=',', parse_dates=['date_time'], index_col=0)
+pd.read_csv('twitter.data', sep=',', parse_dates=['date_time'], index_col='tweet_id')
 df['date_time'] = pd.to_numeric(df['date_time'])

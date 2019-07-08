@@ -1,11 +1,19 @@
+"""
+This module contains the main 
+"""
+
 import logging as log
 
 import pandas as pd
 import numpy as np
 from numba import njit
 
+
 @njit
 def get_density(distances, dc):
+    """
+    Calculates the density of each date from the distances and the dc value.
+    """
     dist_cz = np.zeros(distances.shape[0])
 
     for i in range(distances.shape[0]):
@@ -19,6 +27,9 @@ def get_density(distances, dc):
 
 @njit
 def get_maphd_index(distances, density, dc):
+    """
+
+    """
     next_node = np.full(distances.shape[0], -1)
 
     for i in range(distances.shape[0]):
@@ -29,16 +40,19 @@ def get_maphd_index(distances, density, dc):
                 else:
                     if distances[i, next_node[i]] > distances[i, j]:
                         next_node[i] = j
-            elif density[i] == density[j] and i<j:
+            elif density[i] == density[j] and i < j:
                 if next_node[i] == -1:
                     next_node[i] = j
-                elif distances[i, next_node[i]] > distances[i, j] and distances[i, j]<=dc:
+                elif distances[i, next_node[i]] > distances[i, j] and distances[i, j] <= dc:
                     next_node[i] = j
     return next_node
 
 
 @njit
 def get_maphd(distances, next_nodes):
+    """
+
+    """
     maphd = np.zeros(distances.shape[0])
     for i in range(distances.shape[0]):
         if next_nodes[i] == -1:
@@ -51,6 +65,9 @@ def get_maphd(distances, next_nodes):
 
 @njit
 def clustering(next_nodes, cz):
+    """
+
+    """
     result = np.full(next_nodes.shape[0], -1)
     i = -1
     temp = []
@@ -73,6 +90,9 @@ def clustering(next_nodes, cz):
 
 
 def calc_cz(df):
+    """
+
+    """
     cz = []
     i = 0
     while len(df[1]) > 0:
@@ -82,13 +102,15 @@ def calc_cz(df):
         elif df[0, 0] >= df[0].mean():
             cz.append(int(df[2, 0]))
             df = np.delete(arr=df, obj=0, axis=1)
-
         else:
             break
     return cz
 
 
 def get_cluster_centers(store):
+    """
+    
+    """
     log.info('Test dc: {store.dc}')
     log.info('...')
 

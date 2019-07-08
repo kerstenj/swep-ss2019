@@ -1,3 +1,7 @@
+"""
+This module contains functions for calculating the dc value.
+"""
+
 import math
 import logging as log
 import numpy as np
@@ -36,12 +40,15 @@ def dist(vec_a, vec_b, parameters, max_vec, min_vec, euclid_norm=True):
 
     if euclid_norm:
         return math.sqrt(result) / w
-    else:
-        return result / w
+
+    return result / w
 
 
 @njit
 def get_distances(np_array, parameters, min_vec, max_vec):
+    """
+
+    """
     res = np.zeros((np_array.shape[0], np_array.shape[0]))
     for i in range(np_array.shape[0]):
         for j in range(i+1, np_array.shape[0]):
@@ -57,6 +64,9 @@ def get_distances(np_array, parameters, min_vec, max_vec):
 
 @njit
 def dist_to_cz(distances, cz):
+    """
+
+    """
     dist_cz = np.zeros(cz.shape[0])
     for i in range(cz.shape[0]):
         dist_cz[i] = distances[i, cz[i]]
@@ -64,17 +74,23 @@ def dist_to_cz(distances, cz):
 
 
 def get_z(distances, store):
-    result=[]
+    """
+
+    """
+    result = []
 
     for i in store.cz:
-
-        temp_df=store.df["density"][store.df["cluster_center"]==i]
-        sum=np.sum(temp_df)/len(temp_df)
+        temp_df = store.df["density"][store.df["cluster_center"] == i]
+        sum = np.sum(temp_df) / len(temp_df)
         result.append(sum)
 
-    return np.nansum(result)/len(store.cz)
+    return np.nansum(result) / len(store.cz)
 
-def get_best_dc(store,dc_low,dc_high,step_count):
+
+def get_best_dc(store, dc_low, dc_high, step_count):
+    """
+
+    """
     # Calculate distances between all dates
     store.distances = get_distances(
         store.df.to_numpy(),
@@ -83,16 +99,13 @@ def get_best_dc(store,dc_low,dc_high,step_count):
         store.max_vec.to_numpy()
     )
     # Calculate step different z
-
-
     step = (dc_high - dc_low) / step_count
-
 
     store.dc = dc_low
 
     z_list = list()
-    z_diff_list=list()
-    first=True
+    z_diff_list = list()
+    first = True
     dc_list = list()
     i = 0
 
@@ -114,7 +127,11 @@ def get_best_dc(store,dc_low,dc_high,step_count):
     test_series = pd.Series(z_list, index=dc_list)
     return test_series
 
+
 def calculate_cluster(store, try_dc):
+    """
+
+    """
     # Calculate distances between all dates
     store.distances = get_distances(
         store.df.to_numpy(),

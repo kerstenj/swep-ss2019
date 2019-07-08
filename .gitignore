@@ -1,6 +1,7 @@
 datasets/kdd-cup/*.data
 environment/env
 **/__pycache__
+.pytest_cache
 *.egg*/
 .vscode/
 env/
@@ -9,4 +10,5 @@ testingfdca
 fdca/CSAOld.py
 fdca/calcdcOld.py
 fdca/mainOld.py
-.idea/
+**/.idea/
+.coverage
