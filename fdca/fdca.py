@@ -2,9 +2,8 @@ import logging as log
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
-
 import fdca.calcdc as calcdc
-import fdca.visualisation as visualisation
+import fdca.visualisation_new as vi
 from fdca.storage import Storage
 
 
@@ -35,13 +34,8 @@ def execute(df, parameters, try_dc):
     # Logs a list of cluster centers
     log.info(msg=store.df.sort_values(by="maphd", axis=0, ascending=False).to_string())
 
-    # visualisation.plot_2D(store)
-    visualisation.plot_2D_circles(
-        store,
-        "sepal length",
-        "sepal width",
-        "petal length"
-    )
+    # Plots the data
+    vi.plot_3d_test(store, "sepal length", "sepal width", "petal length", "petal width")
 
     # z to dc plot:
     return (store.df["cluster_center"], store.cz)
@@ -55,5 +49,11 @@ def calculate_z(df, parameters, dc_low=0, dc_high=0.2, step_count=200):
     transform_str_to_int(df, parameters)
     store = Storage(df, parameters)
 
+    #
+    temp = calcdc.get_best_dc(store, dc_low, dc_high, step_count)
+
+    # Plots a graph of the calculated z values
+    # vi.plot_line(temp)
+
     # Calculate dc to z mapping
-    return calcdc.get_best_dc(store, dc_low, dc_high, step_count)
+    return temp
