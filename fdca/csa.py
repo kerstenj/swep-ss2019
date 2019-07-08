@@ -66,7 +66,7 @@ def get_maphd(distances, next_nodes):
 @njit
 def clustering(next_nodes, cz):
     """
-Returns a list of the cluster center indices for every data point.
+    Returns a list of the cluster center indices for every data point.
     """
     result = np.full(next_nodes.shape[0], -1)
     i = -1
@@ -142,4 +142,5 @@ def get_centers(store):
         store.df['next_node'].to_numpy(),
         store.centers
     )
+
     return store.centers

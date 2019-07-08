@@ -15,11 +15,11 @@ def plot_line(series):
 
     py.plot(data, filename="basic-line", auto_open=True)
 
-def plot_2d(store, x, y):
+def plot_2d(df, centers, x, y):
     traces = []
 
-    for i in store.centers:
-        temp_cluster_array = store.df[(store.df["cluster_center"] == i) & (store.df["cluster_center"] != store.df.index)]
+    for i in centers:
+        temp_cluster_array = df[(df["cluster_center"] == i) & (df["cluster_center"] != df.index)]
 
         traces.append(
             go.Scatter(
@@ -30,7 +30,7 @@ def plot_2d(store, x, y):
             )
         )
 
-    cluster_centers = store.df[store.df["cluster_center"] == store.df.index]
+    cluster_centers = df[df["cluster_center"] == df.index]
 
     traces.append(
         go.Scatter(
@@ -90,11 +90,11 @@ def plot_2d(store, x, y):
 #     # Plot
 #     py.plot(figure, filename='basic-scatter', auto_open=True)
 
-def plot_3d(store, x, y, z):
+def plot_3d(df, centers, x, y, z):
     traces = []
 
-    for i in store.centers:
-        temp_cluster_array = store.df[(store.df["cluster_center"] == i) & (store.df["cluster_center"] != store.df.index)]
+    for i in centers:
+        temp_cluster_array = df[(df["cluster_center"] == i) & (df["cluster_center"] != df.index)]
 
         # Create a trace
         traces.append(
@@ -103,11 +103,14 @@ def plot_3d(store, x, y, z):
                 y = temp_cluster_array[y],
                 z = temp_cluster_array[z],
                 name = "Cluster " + str(i),
-                mode = 'markers'
+                mode = 'markers',
+                marker = dict(
+                    opacity = 0.6
+                )
             )
         )
 
-    cluster_centers = store.df[store.df["cluster_center"] == store.df.index]
+    cluster_centers = df[df["cluster_center"] == df.index]
 
     traces.append(
         go.Scatter3d(
@@ -131,7 +134,19 @@ def plot_3d(store, x, y, z):
             r = 0,
             b = 0,
             t = 0
-        )
+        ),
+        scene=dict(
+            xaxis= dict(
+                title= x
+            ),
+            yaxis=dict(
+                title= y
+            ),
+            zaxis = {
+                'title': z
+            }
+        ),
+        legend = {'orientation': 'h'}
     )
 
     figure = go.Figure(data=data, layout=layout)
@@ -139,10 +154,10 @@ def plot_3d(store, x, y, z):
     # Plot
     py.plot(figure, filename='basic-3d-scatter', auto_open=True)
 
-def plot_3d_test(store, x, y, z, size):
+def plot_3d_test(df, centers, x, y, z, size):
     clusters = {}
 
-    for index, item in store.df.iterrows():
+    for index, item in df.iterrows():
         if item["cluster_center"] in clusters:
             clusters[item["cluster_center"]] += item[size]
         else:
@@ -153,9 +168,9 @@ def plot_3d_test(store, x, y, z, size):
     for item in clusters:
         traces.append(
             go.Scatter3d(
-                x = store.df[store.df.index == item][x],
-                y = store.df[store.df.index == item][y],
-                z = store.df[store.df.index == item][z],
+                x = df[df.index == item][x],
+                y = df[df.index == item][y],
+                z = df[df.index == item][z],
                 name = "Cluster " + str(item),
                 mode = "markers",
                 marker = dict(
