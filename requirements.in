@@ -3,5 +3,4 @@ matplotlib
 pandas
 numba
 prettytable
-pluginbase
 openpyxl

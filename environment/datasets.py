@@ -2,9 +2,13 @@ import pandas as pd
 from prettytable import PrettyTable
 import os
 
-import help
+from environment.help import locate_files_rec, format_size
 
 class Dataset:
+    """
+    A class that represents a dataset.
+    It stores the dataframe and the filepath.
+    """
 
     def __init__(self, name, frame, filepath=None):
         self.name = name
@@ -25,11 +29,14 @@ class Dataset:
 
 
 class DatasetManager:
+    """
+    A class that manages multiple datasets.
+    """
 
     def __init__(self, path):
         self.datasets = {}
 
-        files = help.locate_files_rec(path, 'data')
+        files = locate_files_rec(path, 'data')
         self.load_datasets(files)
 
 
@@ -45,7 +52,7 @@ class DatasetManager:
             pt.add_row([
                 ds.name,
                 str( len(ds.frame.index) ),
-                help.format_size(ds.frame.memory_usage(deep=True).sum()),
+                format_size(ds.frame.memory_usage(deep=True).sum()),
                 ds.filepath or ''
             ])
 
@@ -58,7 +65,7 @@ class DatasetManager:
 
     def info(self):
         """"
-        Returns a list of all Datasets with additional information.
+        Returns a list of all datasets with additional information.
         """
         print(self)
 
@@ -90,6 +97,7 @@ class DatasetManager:
         for filepath in files:
             dataset = Dataset.from_file(filepath)
             self.datasets[dataset.name] = dataset
+
 
     def add_datasets(self, datasets):
         """
