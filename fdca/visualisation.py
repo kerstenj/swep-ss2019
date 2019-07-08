@@ -283,38 +283,37 @@ def plot_class_bars(df, centers, class_column):
     py.plot(figure, filename='grouped-bar')
 
 
-def plot_2d_geo(df, centers):
-    limits = [(0,2),(3,10),(11,20),(21,50),(50,3000)]
-    colors = ["rgb(0,116,217)","rgb(255,65,54)","rgb(133,20,75)","rgb(255,133,27)","lightgrey"]
-    cities = []
-    scale = 5000
+def plot_2d_geo(df, centers, longitude, latitude, scale=200, scope='usa'):
+    clusters = []
 
-    for i in range(len(limits)):
-        lim = limits[i]
-        df_sub = df[lim[0]:lim[1]]
-        city = go.Scattergeo(
+    for index, item in df[df["cluster_center"] == df.index].iterrows():
+        size = df[df["cluster_center"] == index].shape[0]
+
+        cluster = go.Scattergeo(
             locationmode = 'USA-states',
-            lon = df_sub['lon'],
-            lat = df_sub['lat'],
-            text = df_sub['text'],
+            lon = [item[longitude]],
+            lat = [item[latitude]],
+            name = "Cluster " + str(item["cluster_center"]),
+            text = "Number of Tweets: " + str(size),
             marker = go.scattergeo.Marker(
-                size = df_sub['pop']/scale,
-                color = colors[i],
+                size = size / scale,
+                opacity = 0.5,
                 line = go.scattergeo.marker.Line(
                     width=0.5, color='rgb(40,40,40)'
                 ),
                 sizemode = 'area'
-            ),
-            name = '{0} - {1}'.format(lim[0],lim[1]) )
-        cities.append(city)
+            )
+        )
+
+        clusters.append(cluster)
 
     layout = go.Layout(
             title = go.layout.Title(
-                text = '2014 US city populations<br>(Click legend to toggle traces)'
+                text = 'Clusters on Map'
             ),
             showlegend = True,
             geo = go.layout.Geo(
-                scope = 'usa',
+                scope = scope,
                 projection = go.layout.geo.Projection(
                     type='albers usa'
                 ),
@@ -327,5 +326,5 @@ def plot_2d_geo(df, centers):
             )
         )
 
-    fig = go.Figure(data=cities, layout=layout)
-    py.iplot(fig, filename='d3-bubble-map-populations')
+    fig = go.Figure(data=clusters, layout=layout)
+    py.plot(fig, filename='cluster_geo_bubble_map')

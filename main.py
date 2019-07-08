@@ -136,8 +136,10 @@ def use_dc_for_clustering(df, parameters):
     print('\nExecuting FDCA...', flush=True)
     # TODO: Handle output
     result_df, result_centers = fdca.execute(df, parameters, try_dc)
-    result_df['date'] = result_df['date'].astype('datetime64[ns]')
     result_df['tweet_id'] = tweet_ids
+
+    if 'date' in result_df.columns:
+        result_df['date'] = result_df['date'].astype('datetime64[ns]')
 
     result_df.to_csv('fdca_twitter.csv')
 
@@ -156,6 +158,7 @@ def use_dc_for_clustering(df, parameters):
         pt.add_row(['2', 'Plots all data points in a three-dimensional coordinate system and colors them by cluster.'])
         pt.add_row(['3', 'Can be used to show the number of tweet in the clusters over time.\nPlots only the cluster centers in a three-dimensional coordinate system and resizes them depending on the number of tweets in that cluster.\nThe values get split in intervals on the z-axis.'])
         pt.add_row(['4', 'Plots a bar chart with one bar per cluster center and colored parts for different classes/categories.'])
+        pt.add_row(['5', 'Plots only cluster centers on top of a map and resizes them depending on the number of tweets in that cluster.'])
 
         print(pt)
 
@@ -210,6 +213,17 @@ def use_dc_for_clustering(df, parameters):
 
                 try:
                     vi.plot_class_bars(result_df, result_centers, class_column)
+                except:
+                    print('\nSomething went wrong during plotting.')
+
+                break
+            elif command == "5":
+                print('\nWhich parameters should be used for the plot?')
+                lon = input("longitude: ")
+                lat = input("latitude: ")
+
+                try:
+                    vi.plot_2d_geo(result_df, result_centers, lon, lat)
                 except:
                     print('\nSomething went wrong during plotting.')
 
