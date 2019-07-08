@@ -49,6 +49,7 @@ def handle_manipulation(df):
                 continue
             try:
                 result = result[(result['date'] >= command[1]) & (result['date'] <= command[2])]
+                result = result.reset_index(drop=True)
             except:
                 print('Something went wrong during filtering')
         elif command[0] == 'print':
@@ -86,7 +87,7 @@ def get_test_df(df):
     result['date'] = pd.to_datetime(result['date'])
 
     result = result.drop(['cluster', 'lex_source', 'lex_info_class', 'lex_informativeness'], axis=1)
-    # result = result[(result['date'] >= '2018-09-13') & (result['date'] <= '2018-09-14')]
+    result = result[(result['date'] >= '2018-09-13') & (result['date'] <= '2018-09-14')]
     result['date'] = result['date'].astype('int64')
     result = result.reset_index(drop=True)
 
@@ -97,29 +98,30 @@ if __name__ == '__main__':
     datasets = ds.DatasetManager(DATASET_PATH)
     datasets.info()
 
-    # dataset = None
-    # while dataset is None:
-    #     name = input('Name of the dataset: ')
-    #     dataset = datasets.get_by_name(name)
-    dataset = datasets.get_by_name('twitter')
+    dataset = None
+    while dataset is None:
+        name = input('Name of the dataset: ')
+        dataset = datasets.get_by_name(name)
+    # dataset = datasets.get_by_name('twitter')
 
-    #df = handle_manipulation(dataset.frame)
-    df = get_test_df(dataset.frame)
-    print(df)
+    df = handle_manipulation(dataset.frame)
+    # df = get_test_df(dataset.frame)
+    # print(df)
 
     tweet_ids = df['tweet_id'].copy(True)
     df = df.drop(['tweet_id'], axis=1)
 
-    parameters = [0,0,0,1]
-    # print('Setup parameter types. Type 0 for numeric and 1 for categorical data.')
-    # col_index = 0
-    # while col_index < len(df.columns):
-    #     option = int(input(f'{df.columns[col_index]}: '))
-    #     if option in [0,1]:
-    #         parameters.append(option)
-    #         col_index += 1
-    #     else:
-    #         print('Invalid option. Please try again.')
+    # parameters = [0,0,0,1]
+    print('Setup parameter types. Type 0 for numeric and 1 for categorical data.')
+    parameters = []
+    col_index = 0
+    while col_index < len(df.columns):
+        option = int(input(f'{df.columns[col_index]}: '))
+        if option in [0,1]:
+            parameters.append(option)
+            col_index += 1
+        else:
+            print('Invalid option. Please try again.')
 
     try_dc = float(input('Type the dc value to use: '))
 
@@ -132,8 +134,9 @@ if __name__ == '__main__':
     result_df.to_csv('fdca_twitter.csv')
 
     # Plots the data
-    vi.plot_x_y_date(result_df, result_centers, "latitude", "longitude", "date")
+    # vi.plot_x_y_date(result_df, result_centers, "latitude", "longitude", "date")
     # vi.plot_3d(result_df, result_centers, "latitude", "longitude", "date")
+    vi.plot_class_bars(result_df, result_centers, "lex_info_class")
 
     # z = fdca.calculate_z(df, parameters, dc_high=0.026)
     print('Success')

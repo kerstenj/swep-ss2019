@@ -49,7 +49,7 @@ def calculate_z(df, parameters, dc_low=0, dc_high=0.2, step_count=200):
     temp = calcdc.get_dc_z_map(store, dc_low, dc_high, step_count)
 
     # Plots a graph of the calculated z values
-    # vi.plot_line(temp)
+    vi.plot_line(temp)
 
     # Calculate dc to z mapping
     return temp

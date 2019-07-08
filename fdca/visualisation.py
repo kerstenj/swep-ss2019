@@ -61,8 +61,6 @@ def plot_2d(df, centers, x, y):
     )
 
     figure = go.Figure(data=data, layout=layout)
-
-    # Plot
     py.plot(figure, filename='basic-scatter', auto_open=True)
 
 # def plot_2d_circles(store, x, y, size):
@@ -90,8 +88,6 @@ def plot_2d(df, centers, x, y):
 #     )
 #
 #     figure = go.Figure(data=data, layout=layout)
-#
-#     # Plot
 #     py.plot(figure, filename='basic-scatter', auto_open=True)
 
 def plot_3d(df, centers, x, y, z):
@@ -158,8 +154,6 @@ def plot_3d(df, centers, x, y, z):
     )
 
     figure = go.Figure(data=data, layout=layout)
-
-    # Plot
     py.plot(figure, filename='basic-3d-scatter', auto_open=True)
 
 def plot_x_y_date(df, centers, x, y, date, steps=100):
@@ -240,6 +234,34 @@ def plot_x_y_date(df, centers, x, y, date, steps=100):
     )
 
     figure = go.Figure(data=[trace], layout=layout)
-
-    # Plot
     py.plot(figure, filename='3d-scatter-test', auto_open=True)
+
+def plot_class_bars(df, centers, class_column, barmode="stack"):
+    classes = {}
+    for index, item in df.iterrows():
+        if item[class_column] in classes:
+            if ("Cluster " + str(item["cluster_center"])) in classes[item[class_column]]:
+                classes[item[class_column]]["Cluster " + str(item["cluster_center"])] += 1
+            else:
+                classes[item[class_column]]["Cluster " + str(item["cluster_center"])] = 1
+        else:
+            classes[item[class_column]] = {
+                "Cluster " + str(item["cluster_center"]): 1
+            }
+
+    traces = []
+    for key in classes:
+        traces.append(
+            go.Bar(
+                x = list(classes[key].keys()),
+                y = list(classes[key].values()),
+                name = key
+            )
+        )
+
+    layout = go.Layout(
+        barmode = barmode
+    )
+
+    figure = go.Figure(data=traces, layout=layout)
+    py.plot(figure, filename='grouped-bar')
