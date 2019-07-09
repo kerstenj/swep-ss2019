@@ -122,13 +122,13 @@ def find_dc_with_graph(df, parameters):
                 print('Invalid input!')
 
 
-def use_dc_for_clustering(df, parameters, tweet_ids=None):
+def use_dc_for_clustering(df, parameters, tweet_ids):
     try_dc = float(input('Type the dc value to use: '))
 
     print('\nExecuting FDCA...', flush=True)
     # TODO: Handle output
     result_df, result_centers = fdca.execute(df, parameters, try_dc)
-    if tweet_ids:
+    if not tweet_ids.empty:
         result_df['tweet_id'] = tweet_ids
 
     if 'date' in result_df.columns:
@@ -188,13 +188,13 @@ def use_dc_for_clustering(df, parameters, tweet_ids=None):
                 zaxis = input("z-axis: ")
                 steps = input("number of intervalls (default: 200): ")
 
-                # try:
-                if steps != '':
-                    vi.plot_x_y_date(result_df, result_centers, xaxis, yaxis, zaxis, int(steps))
-                else:
-                    vi.plot_x_y_date(result_df, result_centers, xaxis, yaxis, zaxis)
-                # except:
-                #     print('\nSomething went wrong during plotting.')
+                try:
+                    if steps != '':
+                        vi.plot_x_y_date(result_df, result_centers, xaxis, yaxis, zaxis, int(steps))
+                    else:
+                        vi.plot_x_y_date(result_df, result_centers, xaxis, yaxis, zaxis)
+                except:
+                    print('\nSomething went wrong during plotting.')
 
                 break
             elif command == "bar":
@@ -244,7 +244,7 @@ if __name__ == '__main__':
         dataset = datasets.get_by_name(name)
 
     # Save tweet ids
-    tweet_ids = None
+    tweet_ids = pd.Series([])
     if 'tweet_id' in dataset.frame.columns:
         tweet_ids = dataset.frame['tweet_id'].copy(True)
         dataset.frame = dataset.frame.drop(['tweet_id'], axis=1)
@@ -255,7 +255,7 @@ if __name__ == '__main__':
         if dtype != 'datetime64[ns]': continue
         df[index] = df[index].astype('int64')
 
-    print('Setup parameter types. Type 0 for numeric and 1 for categorical data.')
+    print('\nSetup parameter types. Type 0 for numeric and 1 for categorical data.')
     parameters = []
     col_index = 0
     while col_index < len(df.columns):
