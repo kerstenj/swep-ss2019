@@ -105,7 +105,7 @@ def get_dc_z_map(store, dc_low, dc_high, step_count):
         cluster_center = csa.get_centers(store)
         store.centers = cluster_center
 
-        z = get_z(store.distances, store)
+        z = get_z(store)
         log.info(msg=f'Z: {z}')
 
         z_list.append(z)
