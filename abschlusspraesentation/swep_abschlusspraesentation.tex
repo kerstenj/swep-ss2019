@@ -49,7 +49,6 @@
 %%%%% presentation informations %%%%%
 \title{Raumzeitliche Analyse von Twitter Daten}
 \subtitle{Softwareentwicklungprojekt I}
-\author{Niklas Baumbach, Felix Juch und Martin Immel}
 \date{}
 
 %%%%% listing style %%%%%
@@ -75,19 +74,33 @@
 %%%%% main %%%%%
 \begin{document}
 	\begin{frame}
-	 	\titlepage
+	 	\titlepage\vspace{-2cm}
+	 	\center Niklas Baumbach, Felix Juch und Martin Immel
 	\end{frame}	
 	
 	
 	\section{Inhalt des Projekts}
+%	\begin{frame}{Inhalt des Projekts}{}
+%		\textbf{Ziele:}\\
+%		\begin{itemize}
+%			\item raumzeitliche Auswertung von Twitter-Daten zur Detektion und Analyse von Naturkatastrophen
+%			\item Clustern der geo-lokalisierten Tweets mit Krisenbezug 
+%			\item Implementierung eines geeigneten Clustering-Algorithmus $\rightarrow$ FDCA (\textit{Fast Density Clustering Algorithm})
+%			\item Erstellen eines Frameworks zum Test des Algorithmus und zur Simulation
+%		\end{itemize}
+%	\end{frame}
+
 	\begin{frame}{Inhalt des Projekts}{}
-		\textbf{Ziele:}\\
-		\begin{itemize}
-			\item raumzeitliche Auswertung von Twitter-Daten zur Detektion und Analyse von Naturkatastrophen
-			\item Clustern der geo-lokalisierten Tweets mit Krisenbezug 
-			\item Implementierung eines geeigneten Clustering-Algorithmus $\rightarrow$ FDCA (\textit{Fast Density Clustering Algorithm})
-			\item Erstellen eines Frameworks zum Test des Algorithmus und zur Simulation
-		\end{itemize}
+		\begin{columns}[c, onlytextwidth]
+			\begin{column}{.5\textwidth}
+				\center\includegraphics[scale=.25]{flame0}
+			\end{column}
+			\begin{column}{.5\textwidth}
+				\center\includegraphics[scale=.25]{flame1}
+			\end{column}
+		\end{columns}
+		
+		\center\includegraphics[scale=.25]{flame2}
 	\end{frame}
 	
 	
@@ -169,7 +182,7 @@
 	
 	% Investierte Zeit pro Woche
 	% Herausstellen der wesentlichen Leistungen
-	\section{}
+	\section{Wesentliche Leistungen}
 	\begin{frame}{Wesentliche Leistungen}{}
 		\begin{itemize}
 			\item Implementierung % Implementierung eines Clustering Algorithmus auf Grundlage des FDCA
@@ -182,7 +195,7 @@
 	
 
 	% Überblick über nicht erreichte Ziele
-	\section{}
+	\section{Nicht erreichte Ziele}
 	\begin{frame}{Nicht erreichte Ziele}{}
 		\begin{itemize}
 			\item Exakte Implementierung des FDCA
@@ -193,14 +206,29 @@
 	
 	
 	% Überblick über das finale Ergebnis
-	\section{}
-	\begin{frame}{Finales Ergebnis}{}
-		Bilder
+	\section{Finales Ergebnis}
+	\begin{frame}{Finales Ergebnis}{Manuelle Suche von dc}
+		\center\includegraphics[width=.9\textwidth]{twitter_z_dc_graph}
 	\end{frame}
 	
+	\begin{frame}{Finales Ergebnis}{3D-Darstellung aller Daten}
+		\center\includegraphics[width=.9\textwidth, clip=true, trim=0mm 0mm 0mm 50mm]{twitter_3d}
+	\end{frame}
+	
+	\begin{frame}{Finales Ergebnis}{3D-Darstellung der Cluster}
+		\center\includegraphics[width=.8\textwidth, clip=true, trim=0mm 0mm 0mm 0mm]{twitter_3d_cluster_700}
+	\end{frame}
+	
+	\begin{frame}{Finales Ergebnis}{Säulendiagramm mit verschiedenen Kategorien}
+		\center\includegraphics[width=.9\textwidth, clip=true, trim=0mm 0mm 0mm 30mm]{twitter_bar_info_class}
+	\end{frame}
+	
+	\begin{frame}{Finales Ergebnis}{Cluster auf Karte}
+		\center\includegraphics[width=.9\textwidth, clip=true, trim=0mm 0mm 0mm 0mm]{twitter_map}
+	\end{frame}
 	
 	% ggf. Präsentation des Systems
-	\section{}	
+	
 	
 	\section{}
 	\begin{frame}{Noch Fragen?}
