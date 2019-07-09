@@ -2,9 +2,11 @@
 
 ### Topic: Fast and flexible clustering of numerical and categorical data for spatio-temporal social media data analysis
 
-#### Overview
+***
 
-#### Install and run the code
+### Overview
+
+### Install and run the code
 **Linux**:
  - Mark setup_env.sh as executable (`chmod +x setup_env.sh`)
  - Run `source setup_env.sh`
