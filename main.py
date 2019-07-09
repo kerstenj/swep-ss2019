@@ -243,10 +243,15 @@ if __name__ == '__main__':
         dataset = datasets.get_by_name(name)
 
     # Save tweet ids
-    tweet_ids = dataset.frame['tweet_id'].copy(True)
-    dataset.frame = dataset.frame.drop(['tweet_id'], axis=1)
+    if 'tweet_id' in dataset.frame.columns:
+        tweet_ids = dataset.frame['tweet_id'].copy(True)
+        dataset.frame = dataset.frame.drop(['tweet_id'], axis=1)
 
     df = handle_manipulation(dataset.frame)
+    # Convert datetimes to int
+    for index, dtype in df.dtypes.iteritems():
+        if dtype != 'datetime64[ns]': continue
+        df[index] = df[index].astype('int64')
 
     print('Setup parameter types. Type 0 for numeric and 1 for categorical data.')
     parameters = []
