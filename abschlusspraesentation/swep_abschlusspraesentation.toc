@@ -1,3 +1,0 @@
-\babel@toc {ngerman}{}
-\beamer@sectionintoc {1}{Inhalt des Projekts}{2}{0}{1}
-\beamer@sectionintoc {2}{Stakeholder}{7}{0}{2}
