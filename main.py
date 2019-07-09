@@ -18,6 +18,10 @@ def handle_manipulation(df):
     while True:
         command = input('> ').split()
 
+        if len(command) < 1:
+            print('Invalid command!')
+            continue
+
         if command[0] == 'help':
             pt = PrettyTable(['Command', 'Description'])
             pt.align['Command'] = 'l'
@@ -141,12 +145,11 @@ def use_dc_for_clustering(df, parameters):
         pt.align['Method'] = 'l'
         pt.align['Description'] = 'l'
 
-        pt.add_row(['0', 'Plots all data points in a two-dimensional coordinate system and colors them by cluster.'])
-        pt.add_row(['1', 'Work in progress. Do not use!'])
-        pt.add_row(['2', 'Plots all data points in a three-dimensional coordinate system and colors them by cluster.'])
-        pt.add_row(['3', 'Can be used to show the number of tweet in the clusters over time.\nPlots only the cluster centers in a three-dimensional coordinate system and resizes them depending on the number of tweets in that cluster.\nThe values get split in intervals on the z-axis.'])
-        pt.add_row(['4', 'Plots a bar chart with one bar per cluster center and colored parts for different classes/categories.'])
-        pt.add_row(['5', 'Plots only cluster centers on top of a map and resizes them depending on the number of tweets in that cluster.'])
+        pt.add_row(['2d', 'Plots all data points in a two-dimensional coordinate system and colors them by cluster.'])
+        pt.add_row(['3d', 'Plots all data points in a three-dimensional coordinate system and colors them by cluster.'])
+        pt.add_row(['3d_cluster', 'Can be used to show the number of tweets in the clusters over time.\nPlots only the cluster centers in a three-dimensional coordinate system and resizes them depending on the number of tweets in that cluster.\nThe values get split in intervals on the z-axis.'])
+        pt.add_row(['bar', 'Plots a bar chart with one bar per cluster center and colored parts for different classes/categories.'])
+        pt.add_row(['map', 'Plots only cluster centers on top of a map and resizes them depending on the number of tweets in that cluster.'])
 
         print(pt)
 
@@ -154,7 +157,7 @@ def use_dc_for_clustering(df, parameters):
         while True:
             command = input('> ')
 
-            if command == '0':
+            if command == '2d':
                 print('\nWhich parameters should be used for the plot?')
                 xaxis = input("x-axis: ")
                 yaxis = input("y-axis: ")
@@ -165,9 +168,7 @@ def use_dc_for_clustering(df, parameters):
                     print('\nSomething went wrong during plotting.')
 
                 break
-            elif command == "1":
-                print('Invalid command!')
-            elif command == "2":
+            elif command == "3d":
                 print('\nWhich parameters should be used for the plot?')
                 xaxis = input("x-axis: ")
                 yaxis = input("y-axis: ")
@@ -179,7 +180,7 @@ def use_dc_for_clustering(df, parameters):
                     print('\nSomething went wrong during plotting.')
 
                 break
-            elif command == "3":
+            elif command == "3d_cluster":
                 print('\nWhich parameters should be used for the plot? Leave input empty to use default value.')
                 xaxis = input("x-axis: ")
                 yaxis = input("y-axis: ")
@@ -195,7 +196,7 @@ def use_dc_for_clustering(df, parameters):
                 #     print('\nSomething went wrong during plotting.')
 
                 break
-            elif command == "4":
+            elif command == "bar":
                 print('\nWhich parameters should be used for the plot?')
                 class_column = input("class column (e.g. lex_info_class): ")
 
@@ -205,7 +206,7 @@ def use_dc_for_clustering(df, parameters):
                     print('\nSomething went wrong during plotting.')
 
                 break
-            elif command == "5":
+            elif command == "map":
                 print('\nWhich parameters should be used for the plot?')
                 lon = input("longitude: ")
                 lat = input("latitude: ")
@@ -240,16 +241,13 @@ if __name__ == '__main__':
     while dataset is None:
         name = input('Name of the dataset: ')
         dataset = datasets.get_by_name(name)
-    # dataset = datasets.get_by_name('twitter')
+
+    # Save tweet ids
+    tweet_ids = dataset.frame['tweet_id'].copy(True)
+    dataset.frame = dataset.frame.drop(['tweet_id'], axis=1)
 
     df = handle_manipulation(dataset.frame)
-    # df = get_test_df(dataset.frame)
-    # print(df)
 
-    tweet_ids = df['tweet_id'].copy(True)
-    df = df.drop(['tweet_id'], axis=1)
-
-    # parameters = [0,0,0,1]
     print('Setup parameter types. Type 0 for numeric and 1 for categorical data.')
     parameters = []
     col_index = 0

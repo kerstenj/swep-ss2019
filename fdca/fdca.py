@@ -24,13 +24,22 @@ def execute(df, parameters, try_dc):
     Returns a series containing the associated cluster of each date.
     """
     # Initialisation
+    # Save categorical data before int transform
+    categorical_data = {}
+    for idx, parameter in enumerate(parameters):
+        if parameter == 0: continue
+        column_name = df.columns[idx]
+        categorical_data[column_name] = df[column_name]
+
     transform_str_to_int(df, parameters)
     store = Storage(df, parameters)
 
     # Calculate clusters
     calcdc.calculate_cluster(store, try_dc)
 
-    # z to dc plot:
+    # Restore categorical data
+    for column_name, data in categorical_data.items():
+        store.df[column_name] = data
     return (store.df, store.centers)
 
 
