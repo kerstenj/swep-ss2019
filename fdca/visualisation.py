@@ -43,7 +43,10 @@ def plot_2d(df, centers, x, y):
                 x=temp_cluster_array[x],
                 y=temp_cluster_array[y],
                 name='Cluster ' + str(i),
-                mode='markers'
+                mode='markers',
+                marker={
+                    'size': 10
+                }
             )
         )
 
@@ -56,7 +59,8 @@ def plot_2d(df, centers, x, y):
             name='Cluster Centers',
             mode='markers',
             marker={
-                'color': 'rgb(0, 0, 0)'
+                'color': 'rgb(0, 0, 0)',
+                'size': 10
             }
         )
     )
