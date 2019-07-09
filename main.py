@@ -82,18 +82,6 @@ def handle_manipulation(df):
             print('Invalid command!')
 
 
-def get_test_df(df):
-    result = df.copy(True)
-    result['date'] = pd.to_datetime(result['date'])
-
-    result = result.drop(['cluster', 'lex_source', 'lex_info_class', 'lex_informativeness'], axis=1)
-    result = result[(result['date'] >= '2018-09-13') & (result['date'] <= '2018-09-14')]
-    result['date'] = result['date'].astype('int64')
-    result = result.reset_index(drop=True)
-
-    return result
-
-
 def find_dc_with_graph(df, parameters):
     repeat = True
     while repeat:
@@ -198,13 +186,13 @@ def use_dc_for_clustering(df, parameters):
                 zaxis = input("z-axis: ")
                 steps = input("number of intervalls (default: 200): ")
 
-                try:
-                    if steps != '':
-                        vi.plot_x_y_date(result_df, result_centers, xaxis, yaxis, zaxis, int(steps))
-                    else:
-                        vi.plot_x_y_date(result_df, result_centers, xaxis, yaxis, zaxis)
-                except:
-                    print('\nSomething went wrong during plotting.')
+                # try:
+                if steps != '':
+                    vi.plot_x_y_date(result_df, result_centers, xaxis, yaxis, zaxis, int(steps))
+                else:
+                    vi.plot_x_y_date(result_df, result_centers, xaxis, yaxis, zaxis)
+                # except:
+                #     print('\nSomething went wrong during plotting.')
 
                 break
             elif command == "4":

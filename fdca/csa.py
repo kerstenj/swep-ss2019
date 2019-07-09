@@ -1,10 +1,9 @@
 """
-This module contains the main
+This module contains the functions for clustering.
 """
 
 import logging as log
 
-import pandas as pd
 import numpy as np
 from numba import njit
 
@@ -17,7 +16,6 @@ def get_density(distances, dc):
     dist_cz = np.zeros(distances.shape[0])
 
     for i in range(distances.shape[0]):
-        result = 0
         for j in range(i+1, distances.shape[0]):
             if distances[i, j] <= dc:
                 dist_cz[i] += 1
@@ -94,8 +92,7 @@ def calculate_centers(df):
     Returns the cluster centers.
     """
     cz = []
-    i = 0
-    while len(df[1]) > 0:
+    while len(df[1]) != 0:
         if df[0, 0] >= df[0].max():
             cz.append(int(df[2, 0]))
             df = np.delete(arr=df, obj=0, axis=1)

@@ -1,9 +1,13 @@
+"""
+This module contains the Storage class.
+"""
+
 import numpy as np
 
 
 class Storage:
     """
-    Stores the dataframe and computed values of the algorithm.
+    Stores the dataframe and computed values of the FDCA.
     """
     def __init__(self, df, parameters):
         # Dataframe
@@ -12,7 +16,7 @@ class Storage:
         self.dc = None
         # Distances between all points
         self.distances = None
-        # 
+        # Cluster center indices
         self.centers = None
         # Row count of the dataframe e.g. number of dates
         self.row_count = len(df.index)

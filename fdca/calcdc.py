@@ -61,7 +61,8 @@ def get_distances(np_array, parameters, min_vec, max_vec):
     # "Dreiecksmatrix" zu "quadratischer Matrix":
     return res + res.transpose()
 
-def get_z(distances, store):
+
+def get_z(store):
     """
     Returns a Z value for a given dc and dataframe.
     """
@@ -92,8 +93,6 @@ def get_dc_z_map(store, dc_low, dc_high, step_count):
     store.dc = dc_low
 
     z_list = list()
-    z_diff_list = list()
-    first = True
     dc_list = list()
     i = 0
 

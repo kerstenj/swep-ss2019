@@ -1,9 +1,8 @@
-import numpy as np
-import logging as log
-import pandas as pd
+"""
+This module contains the functions for executing the FDCA.
+"""
 
 import fdca.calcdc as calcdc
-import fdca.visualisation as vi
 from fdca.storage import Storage
 
 
