@@ -39,8 +39,9 @@
 \graphicspath{{pictures/}}								% picture path
 
 %%%%% presentation theme %%%%%
-\usetheme{Berkeley}
+\usetheme{Madrid}
 \usecolortheme{default}
+
 
 %%%%% presentation logo %%%%%
 %\logo{\includegraphics[height=1.9cm]{picture}}
@@ -80,36 +81,77 @@
 	
 	\section{Inhalt des Projekts}
 	\begin{frame}{Inhalt des Projekts}{}
-		\textbf{Inhalte:}\\
+		\textbf{Ziele:}\\
 		\begin{itemize}
 			\item raumzeitliche Auswertung von Twitter-Daten zur Detektion und Analyse von Naturkatastrophen
-			\item Clustern der geo-lokalisierten Tweets mit Krisenbezug
+			\item Clustern der geo-lokalisierten Tweets mit Krisenbezug 
 			\item Implementierung eines geeigneten Clustering-Algorithmus $\rightarrow$ FDCA (\textit{Fast Density Clustering Algorithm})
-			\item Implementierung eines Frameworks zum Test des Algorithmus und zur Simulation
+			\item Erstellen eines Frameworks zum Test des Algorithmus und zur Simulation
 		\end{itemize}
+	\end{frame}
+	
+	
+	\begin{frame}{Inhalt des Projekts}{Clustering}
+	
+		\textbf{FDCA-Clustering:}
+		\\\bigskip
+		\begin{columns}[c, onlytextwidth]
+			\begin{column}{.45\textwidth}
+				Dichte $\rho$ und Grenzdistanz dc:\\
+				\bigskip
+				\includegraphics[scale=.9]{dc_dichte}
+			\end{column}
+			
+			\begin{column}{.55\textwidth}
+				\begin{itemize}
+					\item dc = Grenzdistanz
+					\item $\rho$ = Anzahl Datenpunkte in Grenzdistanz
+				\end{itemize}
+			\end{column}
+		\end{columns}
+		
 	\end{frame}
 	
 	\begin{frame}{Inhalt des Projekts}{Clustering}
-		\textbf{Clustering:}
-		\begin{itemize}
-			\item Bestimmung der Elementgruppen eines Datensatzes - Cluster
-			\item Einteilung der Elemente in Gruppen mit ähnlichen Eigenschaften - Clustering
-			\item Zugehörigkeit wird über die Bestimmung eines mehrdimensionalen Distanzma\ss es festgelegt
-		\end{itemize}\bigskip
-	\end{frame}
 	
-	\begin{frame}{Inhalt des Projekts}{FDCA}
-		\textbf{FDCA:}
+		\textbf{FDCA-Clustering:}
+		\\\bigskip
+		\begin{columns}[c, onlytextwidth]
+			\begin{column}{.6\textwidth}
+				Delta $\delta$:\\
+				\bigskip
+				\includegraphics[scale=0.5]{delta}
+			\end{column}
+			
+			\begin{column}{.4\textwidth}
+				\begin{itemize}
+					\item $\delta$ = minimaler Abstand zu Punkt höherer Dichte\\
+					(bei gleicher Dichte: höhere Ordnung)
+					\item Ordnung durch Index
+				\end{itemize}
+			\end{column}
+		\end{columns}
 		
-		\begin{itemize}
-			\item funktioniert für numerische und kategorische Daten
-			\item errechnet die Dichte der Datenpunkte
-			\item bestimmen der kleinsten Distanz zu einem Datenpunkt höherer Dichte
-			\item legt Clusterzentren fest (hohe Dichte, gro"se Distanz zu Datenpunkt höherer Dichte)
-			\item sortiert Noise-Punkte aus (geringe Dichte, gro"se Distanz zu Datenpunkt höherer Dichte)
-		\end{itemize}
 	\end{frame}
 	
+	\begin{frame}{Inhalt des Projekts}{Clustering}
+	
+		\textbf{FDCA-Clustering:}
+		\\\bigskip
+		Clusterzentren bestimmen:\\
+		\includegraphics[scale=0.355]{rho_delta}
+		
+	\end{frame}
+	
+	\begin{frame}{Inhalt des Projekts}{Clustering}
+	
+		\textbf{FDCA-Clustering:}
+		\\\bigskip
+		Zuweisung der Cluster:
+		\\\bigskip
+		\center\includegraphics[scale=.6]{cluster_zuweisung}
+		
+	\end{frame}
 	
 	\section{Stakeholder}
 	\begin{frame}{Stakeholder}{}
@@ -128,7 +170,7 @@
 	% Überblick über das finale Ergebnis
 	\section{}
 	
-	
+	% Investierte Zeit pro Woche
 	% Herausstellen der wesentlichen Leistungen
 	\section{}
 	
@@ -138,12 +180,7 @@
 	
 	
 	% ggf. Präsentation des Systems
-	\section{}
-	
-	
-	% Investierte Zeit pro Woche
 	\section{}	
-	
 	
 	\section{}
 	\begin{frame}{Noch Fragen?}
