@@ -122,13 +122,14 @@ def find_dc_with_graph(df, parameters):
                 print('Invalid input!')
 
 
-def use_dc_for_clustering(df, parameters):
+def use_dc_for_clustering(df, parameters, tweet_ids=None):
     try_dc = float(input('Type the dc value to use: '))
 
     print('\nExecuting FDCA...', flush=True)
     # TODO: Handle output
     result_df, result_centers = fdca.execute(df, parameters, try_dc)
-    result_df['tweet_id'] = tweet_ids
+    if tweet_ids:
+        result_df['tweet_id'] = tweet_ids
 
     if 'date' in result_df.columns:
         result_df['date'] = result_df['date'].astype('datetime64[ns]')
@@ -243,6 +244,7 @@ if __name__ == '__main__':
         dataset = datasets.get_by_name(name)
 
     # Save tweet ids
+    tweet_ids = None
     if 'tweet_id' in dataset.frame.columns:
         tweet_ids = dataset.frame['tweet_id'].copy(True)
         dataset.frame = dataset.frame.drop(['tweet_id'], axis=1)
@@ -284,7 +286,7 @@ if __name__ == '__main__':
             find_dc_with_graph(df, parameters)
             break
         elif command == "use_dc":
-            use_dc_for_clustering(df, parameters)
+            use_dc_for_clustering(df, parameters, tweet_ids)
             break
         else:
             print('Invalid command!')
