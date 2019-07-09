@@ -24,4 +24,4 @@ configure your local plotly installation.
 Start python in the Termnal with `python`. Then type in the following commands.
   - `import plotly`
   - `plotly.tools.set_credentials_file(username='DemoAccount', api_key='lr1c37zw81')`
-You have to replace *DemoAccount* with your username and the API key with your own. You can find your API key [https://plot.ly/settings/api "here"].
+You have to replace *DemoAccount* with your username and the API key with your own. You can find your API key [here](https://plot.ly/settings/api).
