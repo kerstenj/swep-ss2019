@@ -81,34 +81,6 @@ def plot_2d(df, centers, x, y):
     py.plot(figure, filename='basic-scatter', auto_open=True)
 
 
-# def plot_2d_circles(store, x, y, size):
-#     trace = go.Scatter(
-#         x = store.df[x],
-#         y = store.df[y],
-#         mode = 'markers',
-#         marker = dict(
-#             size = store.df[size],
-#             opacity = 0.6,
-#             colorscale = 'Viridis'
-#         )
-#     )
-#
-#     data = [trace]
-#
-#     layout= go.Layout(
-#         # title= 'Clustering',
-#         xaxis= dict(
-#             title= x
-#         ),
-#         yaxis=dict(
-#             title= y
-#         )
-#     )
-#
-#     figure = go.Figure(data=data, layout=layout)
-#     py.plot(figure, filename='basic-scatter', auto_open=True)
-
-
 def plot_3d(df, centers, x, y, z):
     traces = []
 
