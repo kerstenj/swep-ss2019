@@ -150,7 +150,7 @@ def plot_x_y_date(df, centers, x, y, date, steps=200):
 
     i = date_min
     while i <= date_max:
-        for index, item in df[(df.date >= i) & (df.date <= i+date_step)].iterrows():
+        for index, item in df[(df[date] >= i) & (df[date] <= i+date_step)].iterrows():
             if item['cluster_center'] in points:
                 if str(i) in points[item['cluster_center']]['dates']:
                     points[item['cluster_center']]['dates'][str(i)] += 1
