@@ -130,6 +130,15 @@ def use_dc_for_clustering(df, parameters, tweet_ids):
     result_df, result_centers = fdca.execute(df, parameters, try_dc)
     if not tweet_ids.empty:
         result_df['tweet_id'] = tweet_ids
+    
+    if not date.empty:
+        result_df['date'] = date
+    
+    if not latitude.empty:
+        result_df['latitude'] = latitude
+    
+    if not longitude.empty:
+        result_df['longitude'] = latitude
 
     if 'date' in result_df.columns:
         result_df['date'] = result_df['date'].astype('datetime64[ns]')
@@ -248,6 +257,21 @@ if __name__ == '__main__':
     if 'tweet_id' in dataset.frame.columns:
         tweet_ids = dataset.frame['tweet_id'].copy(True)
         dataset.frame = dataset.frame.drop(['tweet_id'], axis=1)
+
+    
+    # Save longitude, latitude and date
+    date = pd.Series([])
+    latitude = pd.Series([])
+    longitude = pd.Series([])
+    if 'date' in dataset.frame.columns:
+        date = dataset.frame['date'].copy(True)
+       
+    if 'latitude' in dataset.frame.columns:
+        latitude = dataset.frame['latitude'].copy(True)
+        
+    if 'longitude' in dataset.frame.columns:
+        longitude = dataset.frame['longitude'].copy(True)
+        
 
     df = handle_manipulation(dataset.frame)
     # Convert datetimes to int
